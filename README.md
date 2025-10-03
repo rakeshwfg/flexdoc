@@ -1,10 +1,9 @@
-# flexdoc
-**FlexDoc** is a professional-grade, open-source npm library that converts HTML to PDF and PPTX (PowerPoint) formats. It's designed as a **free alternative to Adobe's expensive APIs**, providing enterprise-quality output without any cost, rate limits, or privacy concerns.
-=======
 # FlexDoc 📄
 
 <p align="center">
   <strong>A flexible, lightweight npm library for converting HTML to PDF and PPTX formats</strong>
+  <br>
+  <em>Professional-grade, open-source alternative to Adobe's expensive APIs</em>
 </p>
 
 <p align="center">
@@ -13,7 +12,8 @@
   <a href="#quick-start">Quick Start</a> •
   <a href="#api-documentation">API</a> •
   <a href="#examples">Examples</a> •
-  <a href="#license">License</a>
+  <a href="#contributing">Contributing</a> •
+  <a href="#support-this-project">Support</a>
 </p>
 
 ---
@@ -118,12 +118,7 @@ const result = await flexdoc.toPPTX(html, {
   splitBy: 'h2',
   title: 'My Presentation',
   author: 'John Doe',
-  theme: {
-    primary: '#2E86C1',
-    secondary: '#85C1E9',
-    background: '#FFFFFF',
-    textColor: '#333333'
-  }
+  theme: 'corporate'
 });
 ```
 
@@ -139,13 +134,13 @@ const result = await flexdoc.convert(html, {
 });
 ```
 
-##### `batchConvert(inputs)`
+##### `convertBatch(items)`
 Process multiple conversions.
 
 ```javascript
-const results = await flexdoc.batchConvert([
-  { html: content1, options: { format: OutputFormat.PDF } },
-  { html: content2, options: { format: OutputFormat.PPTX } }
+const results = await flexdoc.convertBatch([
+  { html: content1, format: OutputFormat.PDF, options: { format: 'A4' } },
+  { html: content2, format: OutputFormat.PPTX, options: { layout: '16x9' } }
 ]);
 ```
 
@@ -188,14 +183,14 @@ await flexdoc.toPDF({ content: '<h1>Hello</h1>' });
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `layout` | string | '16x9' | Slide layout (16x9, 16x10, 4x3, wide) |
+| `layout` | string | '16x9' | Slide layout (16x9, 16x10, 4x3) |
 | `slideWidth` | number | 10 | Slide width in inches |
 | `slideHeight` | number | 5.625 | Slide height in inches |
 | `splitBy` | string | 'h2' | Element to split slides by |
 | `title` | string | - | Presentation title |
 | `author` | string | - | Presentation author |
 | `company` | string | - | Company name |
-| `theme` | object | - | Presentation theme colors |
+| `theme` | string | 'default' | Presentation theme (default, dark, corporate, creative) |
 | `includeImages` | boolean | true | Include images from HTML |
 | `maxContentPerSlide` | number | 500 | Max characters per slide (auto-split) |
 
@@ -231,13 +226,13 @@ const result = await flexdoc.toPDF({
 const html = `
   <h1>Introduction</h1>
   <p>Welcome to our presentation</p>
-  
+
   <h1>Features</h1>
   <ul>
     <li>Feature 1</li>
     <li>Feature 2</li>
   </ul>
-  
+
   <h1>Conclusion</h1>
   <p>Thank you!</p>
 `;
@@ -245,10 +240,7 @@ const html = `
 const result = await flexdoc.toPPTX(html, {
   outputPath: './slides.pptx',
   splitBy: 'h1',
-  theme: {
-    primary: '#1E88E5',
-    background: '#FFFFFF'
-  }
+  theme: 'corporate'
 });
 ```
 
@@ -310,14 +302,14 @@ const documents = [
 
 const inputs = documents.map(doc => ({
   html: doc.content,
+  format: doc.name.endsWith('.pdf') ? OutputFormat.PDF : OutputFormat.PPTX,
   options: {
-    format: doc.name.endsWith('.pdf') ? OutputFormat.PDF : OutputFormat.PPTX,
     outputPath: `./output/${doc.name}`
   }
 }));
 
-const results = await flexdoc.batchConvert(inputs);
-console.log(`Converted ${results.filter(r => r.success).length} documents`);
+const results = await flexdoc.convertBatch(inputs);
+console.log(`Converted ${results.successful} of ${results.total} documents`);
 ```
 
 ## 🏗️ Architecture
@@ -328,10 +320,16 @@ FlexDoc is built with a modular architecture:
 flexdoc/
 ├── src/
 │   ├── index.ts           # Main FlexDoc class
-│   ├── types/             # TypeScript definitions
+│   ├── types.ts           # TypeScript definitions
 │   ├── converters/        # PDF and PPTX converters
 │   │   ├── pdf-converter.ts
-│   │   └── pptx-converter.ts
+│   │   ├── pptx-converter.ts
+│   │   ├── enhanced-pptx-converter.ts
+│   │   └── professional-pptx-converter.ts
+│   ├── engines/           # Processing engines
+│   │   ├── chart-engine.ts
+│   │   ├── image-processing-engine.ts
+│   │   └── ai-layout-engine.ts
 │   └── utils/             # Utility functions
 │       ├── validators.ts
 │       └── file-handler.ts
@@ -357,11 +355,74 @@ npm run example:pptx
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### How to Contribute
+
+1. **Fork the repository**
+2. **Create your feature branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit your changes** (`git commit -m 'Add some AmazingFeature'`)
+4. **Push to the branch** (`git push origin feature/AmazingFeature`)
+5. **Open a Pull Request**
+
+### Development Setup
+
+```bash
+# Clone your fork
+git clone https://github.com/yourusername/flexdoc.git
+cd flexdoc
+
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev
+
+# Run tests
+npm test
+
+# Build
+npm run build
+```
+
+### Contribution Guidelines
+
+- Write clear, concise commit messages
+- Add tests for new features
+- Update documentation as needed
+- Follow the existing code style
+- Ensure all tests pass before submitting PR
+
+## 💖 Support This Project
+
+If FlexDoc has helped you or your organization, consider supporting its development!
+
+### ☕ Buy Me a Coffee
+
+Your support helps maintain and improve FlexDoc:
+
+- ⭐ **Star this repository** on [GitHub](https://github.com/yourusername/flexdoc)
+- 💝 **Sponsor on GitHub**: [Become a sponsor](https://github.com/sponsors/yourusername)
+- ☕ **Buy me a coffee**: [ko-fi.com/yourusername](https://ko-fi.com/yourusername)
+- 💳 **One-time donation**: [PayPal](https://paypal.me/rakesh8116)
+
+### 🌟 Other Ways to Support
+
+- 📢 **Share** FlexDoc with your network
+- 🐛 **Report bugs** and suggest features
+- 📝 **Write** blog posts or tutorials about FlexDoc
+- 💻 **Contribute** code, documentation, or examples
+- 💬 **Help others** in GitHub discussions
+
+### 🏢 Enterprise Support
+
+Need dedicated support, custom features, or consulting?
+
+- 📧 Email: your.email@example.com
+- 🔗 LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
+- 💼 Custom development and integration services available
+
+### 🙏 Thank You!
+
+Every contribution, no matter how small, makes a difference. Thank you for supporting open source!
 
 ## 📄 License
 
@@ -373,13 +434,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [PptxGenJS](https://github.com/gitbrent/PptxGenJS) for PPTX creation
 - [jsdom](https://github.com/jsdom/jsdom) for HTML parsing
 - [html-to-text](https://github.com/html-to-text/node-html-to-text) for text extraction
+- [Sharp](https://github.com/lovell/sharp) for image processing
 
 ## 📞 Support
 
 For issues, questions, or suggestions, please:
-- Open an issue on [GitHub](https://github.com/yourusername/flexdoc/issues)
-- Check the [examples](./examples) directory
-- Read the [API documentation](#api-documentation)
+- 📋 Open an issue on [GitHub](https://github.com/yourusername/flexdoc/issues)
+- 💬 Start a discussion on [GitHub Discussions](https://github.com/yourusername/flexdoc/discussions)
+- 📖 Check the [examples](./examples) directory
+- 📚 Read the [API documentation](#api-documentation)
 
 ## 🚀 Roadmap
 
@@ -390,10 +453,26 @@ For issues, questions, or suggestions, please:
 - [ ] Cloud storage integration (S3, Google Drive)
 - [ ] CLI tool for command-line conversions
 - [ ] Browser-based version
+- [ ] Template marketplace
+- [ ] Advanced theming engine
+- [ ] Multi-language support
+
+## 🌍 Community
+
+Join our community:
+
+- 🐦 Twitter: [@yourhandle](https://twitter.com/yourhandle)
+- 💬 Discord: [Join our server](https://discord.gg/yourserver)
+- 📱 Telegram: [FlexDoc Community](https://t.me/flexdoc)
 
 ---
 
 <p align="center">
-  Made with ❤️ by Rakesh Singh
+  <strong>Made with ❤️ by <a href="https://github.com/yourusername">Rakesh Singh</a></strong>
+  <br>
+  <sub>Free and Open Source • Enterprise Ready • Zero Dependencies Cost</sub>
 </p>
->>>>>>> 5dd093d (🎉 Initial release: FlexDoc - Professional HTML to PDF/PPTX converter)
+
+<p align="center">
+  <a href="https://github.com/yourusername/flexdoc/stargazers">⭐ Star us on GitHub!</a>
+</p>
