@@ -399,9 +399,9 @@ If FlexDoc has helped you or your organization, consider supporting its developm
 
 Your support helps maintain and improve FlexDoc:
 
-- ⭐ **Star this repository** on [GitHub](https://github.com/yourusername/flexdoc)
-- 💝 **Sponsor on GitHub**: [Become a sponsor](https://github.com/sponsors/yourusername)
-- ☕ **Buy me a coffee**: [ko-fi.com/yourusername](https://ko-fi.com/yourusername)
+- ⭐ **Star this repository** on [GitHub](https://github.com/rakeshwfg/flexdoc)
+- 💝 **Sponsor on GitHub**: [Become a sponsor](https://github.com/sponsors/rakeshwfg)
+- ☕ **Buy me a coffee**: [ko-fi.com/rakeshsingh16](https://ko-fi.com/rakeshsingh16)
 - 💳 **One-time donation**: [PayPal](https://paypal.me/rakesh8116)
 
 ### 🌟 Other Ways to Support
@@ -461,7 +461,7 @@ For issues, questions, or suggestions, please:
 
 Join our community:
 
-- 🐦 Twitter: [@yourhandle](https://twitter.com/yourhandle)
+- 🐦 Twitter: [@rakesh8116](https://x.com/rakesh8116)
 - 💬 Discord: [Join our server](https://discord.gg/yourserver)
 - 📱 Telegram: [FlexDoc Community](https://t.me/flexdoc)
 
