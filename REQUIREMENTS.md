@@ -305,6 +305,7 @@ class FlexDocError extends Error {
 - [x] ~~REST API wrapper~~ ✅ **COMPLETED v1.5.0**
 - [x] ~~Cloud storage integration~~ ✅ **COMPLETED v1.6.0**
 - [x] ~~Advanced ML-based layout detection~~ ✅ **COMPLETED v1.7.0**
+- [x] ~~Enhanced PPTX with structured content (tables, lists)~~ ✅ **COMPLETED v1.8.0**
 
 #### Phase 3 (Future):
 - [ ] Excel (.xlsx) generation
@@ -411,6 +412,113 @@ flexdoc/
 7. **Enterprise Ready**: TypeScript, testing, documentation
 8. **AI-Powered**: Intelligent optimization and enhancement
 
+## 📦 Version History
+
+### v1.8.0 - PPTX Enhancement Release (Current)
+**Focus**: Major improvements to HTML to PowerPoint conversion
+
+**Key Features**:
+- ✅ Enhanced structured content extraction (tables, lists, text)
+- ✅ Native PPTX table rendering with proper formatting
+- ✅ Improved bullet point and numbered list handling
+- ✅ Fixed critical bugs (NodeFilter, Node types, section extraction)
+- ✅ Removed Puppeteer dependency from professional mode
+- ✅ Better content layout with dynamic Y-positioning
+- ✅ Enhanced styling (fonts, colors, spacing)
+
+**Performance**:
+- Complex presentation: 11 slides, 219KB in 131ms
+- Professional mode: 32ms (no browser overhead)
+
+**Bug Fixes**:
+- Fixed 0 slides bug in section-based splitting
+- Fixed NodeFilter compatibility with JSDOM
+- Fixed Node type references (ELEMENT_NODE, TEXT_NODE)
+- Fixed professional mode "socket hang up" errors
+
+### v1.7.0 - ML Layout Detection
+**Focus**: Intelligent content analysis and layout optimization
+
+**Key Features**:
+- Content classification (11 types)
+- Layout pattern detection (7 patterns)
+- Importance scoring algorithm (5 levels)
+- Smart section grouping and page breaking
+- Keyword extraction and sentiment analysis
+- Heuristic-based approach (no heavy ML dependencies)
+
+### v1.6.0 - Cloud Storage Integration
+**Focus**: Cloud-native document pipeline
+
+**Key Features**:
+- AWS S3 adapter with multipart uploads
+- Azure Blob Storage adapter
+- Google Drive support (planned)
+- Cloud URL parsing (s3://, azure://, etc.)
+- Automatic upload after conversion
+- Unified cloud storage manager
+
+### v1.5.0 - REST API Server
+**Focus**: Language-agnostic API wrapper
+
+**Key Features**:
+- Express.js REST API server
+- Async job processing and tracking
+- File upload handling with multer
+- OpenAPI/Swagger documentation
+- Docker containerization
+- Rate limiting and security (Helmet, CORS)
+
+### v1.4.0 - Word Document Support
+**Focus**: HTML to DOCX conversion
+
+**Key Features**:
+- Microsoft Word (.docx) generation
+- Document structure preservation
+- Styling and formatting support
+- Table and image handling
+
+### v1.3.0 - Advanced Theming Engine
+**Focus**: Professional design system with 25+ themes
+
+**Key Features**:
+- 25+ professional theme presets
+- Custom theme builder
+- Color scheme management
+- Font pairing system
+- Theme categories (Business, Creative, Tech, Academic, Minimal)
+
+### v1.2.0 - Chart Generation
+**Focus**: Automatic data visualization
+
+**Key Features**:
+- Auto chart generation from HTML tables
+- Multiple chart types (bar, line, pie, area, scatter)
+- Smart chart type selection
+- Professional color schemes
+- Data analysis and formatting
+
+### v1.1.0 - CLI & Watermarks
+**Focus**: Command-line interface and PDF watermarking
+
+**Key Features**:
+- Full CLI with Commander.js
+- Batch conversion support
+- PDF watermarks (text and image)
+- Multiple positioning options
+- Opacity and rotation control
+
+### v1.0.0 - Initial Release
+**Focus**: Core HTML to PDF and PPTX conversion
+
+**Key Features**:
+- HTML to PDF using Puppeteer
+- HTML to PPTX using pptxgenjs
+- Basic and professional PPTX modes
+- AI-powered layout optimization
+- Image processing engine
+- TypeScript implementation
+
 ## 📝 Context for Future Development
 
 This project aims to democratize document conversion by providing enterprise-quality tools for free. The vision is to become the standard solution for HTML to document conversion, saving millions of dollars for businesses worldwide while ensuring data privacy and sovereignty.
@@ -421,6 +529,12 @@ The codebase is designed to be:
 - **Performant**: Optimized for speed and memory
 - **Reliable**: Comprehensive error handling and testing
 - **Accessible**: Great documentation and examples
+
+**Current Status**: Phase 2 Complete ✅
+- 8 major releases (v1.0.0 → v1.8.0)
+- All planned Phase 2 features delivered
+- Production-ready with 149KB package size
+- 123 total files in distribution
 
 ---
 
