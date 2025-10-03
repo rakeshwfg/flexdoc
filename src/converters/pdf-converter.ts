@@ -131,8 +131,11 @@ export class PDFConverter implements IConverter {
       reportProgress('Options Prepared', 70, 'PDF options configured');
 
       // Generate PDF
-      const pdfBuffer = await page.pdf(pdfOptions);
+      const pdfData = await page.pdf(pdfOptions);
       reportProgress('PDF Generated', 90, 'PDF buffer created');
+
+      // Convert Uint8Array to Buffer for compatibility
+      const pdfBuffer = Buffer.from(pdfData);
 
       // Close page
       await page.close();
@@ -218,7 +221,7 @@ export class PDFConverter implements IConverter {
   private async launchBrowser(): Promise<Browser> {
     try {
       return await puppeteer.launch({
-        headless: 'new',
+        headless: true,  // Puppeteer v24+ uses true instead of 'new'
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',

@@ -950,7 +950,7 @@ export class ProfessionalPPTXConverter {
    */
   private async launchBrowser(): Promise<Browser> {
     return await puppeteer.launch({
-      headless: 'new',
+      headless: true,  // Puppeteer v24+ uses true instead of 'new'
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
