@@ -136,7 +136,9 @@ program
   .option('-t, --title <title>', 'Presentation title')
   .option('-a, --author <author>', 'Presentation author')
   .option('-c, --company <company>', 'Company name')
-  .option('--theme <theme>', 'Theme (default, dark, corporate, creative)', 'default')
+  .option('--theme <theme>', 'Theme preset ID or name (corporate-blue, dark-mode, tech-purple, etc.)', 'corporate-blue')
+  .option('--theme-file <file>', 'Custom theme JSON file')
+  .option('--primary-color <color>', 'Override theme primary color (hex)')
   .option('--no-images', 'Exclude images from slides')
   .option('--max-content <chars>', 'Max characters per slide', '500')
   .option('--no-auto-charts', 'Disable automatic chart generation from tables')
@@ -157,6 +159,14 @@ program
         customCSS = fs.readFileSync(options.css, 'utf-8');
       }
 
+      // Load theme if theme-file is provided
+      let theme: any = options.theme;
+      if (options.themeFile) {
+        const { ThemeManager } = await import('./themes');
+        theme = ThemeManager.loadThemeFromFile(options.themeFile);
+        console.log(`✅ Loaded custom theme from ${options.themeFile}`);
+      }
+
       // Build PPTX options
       const pptxOptions: PPTXOptions = {
         outputPath: options.output,
@@ -165,7 +175,10 @@ program
         title: options.title,
         author: options.author,
         company: options.company,
-        theme: options.theme as any,
+        theme,
+        themeOptions: options.primaryColor ? {
+          primaryColor: options.primaryColor
+        } : undefined,
         includeImages: options.images !== false,
         maxContentPerSlide: parseInt(options.maxContent),
         autoCharts: options.autoCharts !== false,
@@ -272,7 +285,56 @@ program
     console.log('  - PDF (via Puppeteer)');
     console.log('  - PPTX (via PptxGenJS)');
     console.log('\nFor help: flexdoc --help');
+    console.log('For themes: flexdoc themes');
     console.log('Documentation: https://github.com/yourusername/flexdoc\n');
+  });
+
+// Themes Command
+program
+  .command('themes')
+  .description('List all available theme presets')
+  .option('--category <category>', 'Filter by category (business, tech, creative, academic, etc.)')
+  .option('--json', 'Output as JSON')
+  .action(async (options) => {
+    const { ThemeManager } = await import('./themes');
+
+    let presets = ThemeManager.listPresets();
+
+    if (options.category) {
+      presets = ThemeManager.getThemesByCategory(options.category).map(p => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        category: p.category
+      }));
+    }
+
+    if (options.json) {
+      console.log(JSON.stringify(presets, null, 2));
+      return;
+    }
+
+    console.log('\n🎨 Available Theme Presets');
+    console.log('==========================\n');
+
+    // Group by category
+    const grouped: Record<string, typeof presets> = {};
+    presets.forEach(p => {
+      if (!grouped[p.category]) grouped[p.category] = [];
+      grouped[p.category].push(p);
+    });
+
+    Object.entries(grouped).forEach(([category, themes]) => {
+      console.log(`📁 ${category.toUpperCase()}`);
+      themes.forEach(theme => {
+        console.log(`  • ${theme.id.padEnd(25)} - ${theme.name}`);
+        console.log(`    ${theme.description}`);
+      });
+      console.log('');
+    });
+
+    console.log('Usage: flexdoc pptx input.html --theme <theme-id>');
+    console.log('Example: flexdoc pptx input.html --theme tech-purple\n');
   });
 
 /**

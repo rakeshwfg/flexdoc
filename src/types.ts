@@ -121,8 +121,8 @@ export interface PPTXOptions extends BaseConversionOptions {
   customSplitSelector?: string;
   /** Include slide numbers */
   slideNumbers?: boolean;
-  /** Theme/template to use */
-  theme?: 'default' | 'dark' | 'corporate' | 'creative';
+  /** Theme/template to use - can be a preset ID, legacy name, or custom Theme object */
+  theme?: string | import('./themes').Theme;
   /** Add conclusion slide */
   addConclusion?: boolean;
   /** Color scheme */
@@ -165,6 +165,21 @@ export interface PPTXOptions extends BaseConversionOptions {
     theme?: 'light' | 'dark' | 'colorful';
     /** Position: replace table or show both */
     position?: 'replace' | 'alongside' | 'both';
+  };
+  /** Theme customization options */
+  themeOptions?: {
+    /** Quick primary color override */
+    primaryColor?: string;
+    /** Quick secondary color override */
+    secondaryColor?: string;
+    /** Quick accent color override */
+    accentColor?: string;
+    /** Quick font family override */
+    fontFamily?: string;
+    /** Enable/disable effects */
+    enableEffects?: boolean;
+    /** Dark mode variant */
+    darkMode?: boolean;
   };
 }
 

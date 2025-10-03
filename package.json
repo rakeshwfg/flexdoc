@@ -1,7 +1,7 @@
 {
   "name": "flexdoc",
-  "version": "1.2.0",
-  "description": "A flexible, lightweight npm library for converting HTML to PDF and PPTX formats with automatic chart generation. Enterprise-ready with zero paid dependencies.",
+  "version": "1.3.0",
+  "description": "A flexible, lightweight npm library for converting HTML to PDF and PPTX formats with 25+ professional themes and automatic chart generation. Enterprise-ready with zero paid dependencies.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -20,7 +20,8 @@
     "example:pptx": "node examples/pptx-example.js",
     "example:advanced": "node examples/advanced-usage.js",
     "example:professional": "node examples/professional-pptx.js",
-    "example:charts": "node examples/charts-example.js"
+    "example:charts": "node examples/charts-example.js",
+    "example:themes": "node examples/themes-example.js"
   },
   "keywords": [
     "html",
@@ -42,7 +43,12 @@
     "charts",
     "auto-charts",
     "data-visualization",
-    "table-to-chart"
+    "table-to-chart",
+    "themes",
+    "theming",
+    "branding",
+    "customization",
+    "design-system"
   ],
   "author": "Rakesh Singh",
   "license": "MIT",

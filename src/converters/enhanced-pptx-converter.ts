@@ -15,6 +15,7 @@ import {
   HTMLInput
 } from '../types';
 import { ChartEngine, ChartData } from '../engines/chart-engine';
+import { ThemeManager, Theme } from '../themes';
 
 interface EnhancedSlideContent {
   title?: string;
@@ -40,34 +41,7 @@ interface TableData {
 
 export class EnhancedPPTXConverter {
   private pptx!: PptxGenJS;
-  
-  // Professional color schemes
-  private colorSchemes = {
-    professional: {
-      primary: '#003366',
-      secondary: '#0066CC',
-      accent: '#FF6600',
-      background: '#FFFFFF',
-      text: '#333333',
-      lightBg: '#F5F5F5'
-    },
-    modern: {
-      primary: '#2E3440',
-      secondary: '#5E81AC',
-      accent: '#88C0D0',
-      background: '#ECEFF4',
-      text: '#2E3440',
-      lightBg: '#E5E9F0'
-    },
-    vibrant: {
-      primary: '#6366F1',
-      secondary: '#8B5CF6',
-      accent: '#EC4899',
-      background: '#FFFFFF',
-      text: '#1F2937',
-      lightBg: '#F9FAFB'
-    }
-  };
+  private currentTheme!: Theme;
 
   /**
    * Enhanced HTML to PPTX conversion
@@ -79,6 +53,9 @@ export class EnhancedPPTXConverter {
     const startTime = Date.now();
     
     try {
+      // Load theme
+      this.currentTheme = this.loadTheme(options);
+
       // Initialize presentation
       this.pptx = new PptxGenJS();
       this.setupPresentation(options);
@@ -498,8 +475,7 @@ export class EnhancedPPTXConverter {
     options: PPTXOptions
   ): Promise<void> {
     const slide = this.pptx.addSlide();
-    const schemeName = (options.colorScheme || 'professional') as keyof typeof this.colorSchemes;
-    const scheme = this.colorSchemes[schemeName];
+    const scheme = this.getColorScheme();
     
     // Apply background
     if (slideContent.background) {
@@ -885,12 +861,49 @@ export class EnhancedPPTXConverter {
     };
   }
 
+  /**
+   * Load theme from options
+   */
+  private loadTheme(options: PPTXOptions): Theme {
+    let theme: Theme;
+
+    // Check if theme is a custom Theme object
+    if (options.theme && typeof options.theme === 'object') {
+      theme = options.theme as Theme;
+    } else {
+      // Load from preset or default
+      const themeName = (options.theme as string) || 'corporate-blue';
+      theme = ThemeManager.getTheme(themeName);
+    }
+
+    // Apply theme options if provided
+    if (options.themeOptions) {
+      theme = ThemeManager.applyThemeOptions(theme, options.themeOptions);
+    }
+
+    return theme;
+  }
+
+  /**
+   * Get color scheme from current theme
+   */
+  private getColorScheme(): any {
+    return {
+      primary: this.currentTheme.colors.primary,
+      secondary: this.currentTheme.colors.secondary,
+      accent: this.currentTheme.colors.accent,
+      background: this.currentTheme.colors.background,
+      text: this.currentTheme.colors.text,
+      lightBg: this.currentTheme.colors.surface
+    };
+  }
+
   private setupPresentation(options: PPTXOptions): void {
     // Set presentation metadata
     if (options.title) this.pptx.title = options.title;
     if (options.author) this.pptx.author = options.author;
     if (options.company) this.pptx.company = options.company;
-    
+
     // Set layout
     this.pptx.defineLayout({
       name: 'CUSTOM',

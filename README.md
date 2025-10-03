@@ -22,9 +22,12 @@
 
 - 🚀 **Dual Format Support**: Convert HTML to both PDF and PPTX formats
 - 🎯 **Unified API**: Single interface for all conversions with format-specific options
+- 🎨 **25+ Professional Themes**: Beautiful pre-designed themes for presentations
+- 🛠️ **Custom Theme Builder**: Create and save your own branded themes
 - 📦 **Zero Paid Dependencies**: Uses only open-source libraries (Puppeteer, pptxgenjs)
-- 🎨 **Custom Styling**: Support for custom CSS and JavaScript injection
-- 📊 **Progress Tracking**: Real-time conversion progress updates
+- 📊 **Auto Charts**: Automatic table-to-chart conversion with smart type detection
+- 💧 **PDF Watermarks**: Text and image watermarks with full customization
+- 🖥️ **CLI Tool**: Powerful command-line interface for quick conversions
 - 🔄 **Batch Processing**: Convert multiple documents simultaneously
 - 💪 **Enterprise Ready**: TypeScript support, error handling, and retry logic
 - 🌐 **Multiple Input Sources**: HTML string, file path, or URL
@@ -504,6 +507,86 @@ await flexdoc.toPPTX(html, {
 - **Area Charts**: Large datasets (>20 points)
 - **Scatter Charts**: Correlation data (2 numeric columns)
 
+### Professional Themes for Presentations
+
+FlexDoc includes 25+ professional themes and a powerful theme builder:
+
+```javascript
+// Use a preset theme
+await flexdoc.toPPTX(html, {
+  outputPath: './corporate.pptx',
+  theme: 'corporate-blue' // or 'tech-purple', 'creative-pink', etc.
+});
+
+// Create a custom theme
+const { ThemeBuilder } = require('flexdoc');
+
+const myTheme = new ThemeBuilder('My Brand')
+  .setPrimaryColor('#6366F1')
+  .setFontPairing('Modern Professional')
+  .setShadows(true)
+  .setGradients(true)
+  .build();
+
+await flexdoc.toPPTX(html, {
+  outputPath: './branded.pptx',
+  theme: myTheme
+});
+
+// Quick customization
+await flexdoc.toPPTX(html, {
+  outputPath: './custom.pptx',
+  theme: 'corporate-blue',
+  themeOptions: {
+    primaryColor: '#DB2777', // Override primary color
+    enableEffects: true
+  }
+});
+
+// Save and load themes
+const { ThemeManager } = require('flexdoc');
+
+// Save theme to file
+ThemeManager.saveThemeToFile(myTheme, './my-theme.json');
+
+// Load from file
+const loadedTheme = ThemeManager.loadThemeFromFile('./my-theme.json');
+await flexdoc.toPPTX(html, { theme: loadedTheme });
+
+// List all available themes
+const themes = ThemeManager.listPresets();
+console.log(`Available themes: ${themes.length}`);
+```
+
+**Available Theme Categories:**
+- **Business** (5 themes): corporate-blue, professional-gray, executive-gold, financial-green, consulting-navy
+- **Tech** (5 themes): tech-purple, startup-orange, innovation-teal, digital-cyan, saas-modern
+- **Creative** (5 themes): creative-pink, designer-vibrant, artistic-rainbow, modern-minimal, bold-impact
+- **Academic** (3 themes): academic-serif, education-friendly, scientific-clean
+- **Special** (7 themes): dark-mode, high-contrast, print-optimized, elegant-luxury, playful-fun, nature-green, ocean-blue
+
+**Theme Builder Features:**
+- Color harmony generation (complementary, analogous, triadic, monochromatic)
+- Smart font pairings (17 curated combinations)
+- Dark mode conversion
+- Accessibility validation (WCAG compliance)
+- Complete customization of colors, typography, layout, and effects
+
+**CLI Theme Support:**
+```bash
+# List all themes
+flexdoc themes
+
+# Use a preset theme
+flexdoc pptx input.html --theme tech-purple
+
+# Use custom theme file
+flexdoc pptx input.html --theme-file my-theme.json
+
+# Quick color override
+flexdoc pptx input.html --theme corporate-blue --primary-color "#DB2777"
+```
+
 ### Add Watermarks to PDFs
 
 ```javascript
@@ -777,11 +860,11 @@ For issues, questions, or suggestions, please:
 - [ ] Implement Word document (.docx) generation
 - [x] ~~Add watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Support for charts and graphs in presentations~~ ✅ **COMPLETED v1.2.0**
+- [x] ~~Advanced theming engine~~ ✅ **COMPLETED v1.3.0**
 - [ ] Cloud storage integration (S3, Google Drive)
 - [x] ~~CLI tool for command-line conversions~~ ✅ **COMPLETED v1.1.0**
 - [ ] Browser-based version
 - [ ] Template marketplace
-- [ ] Advanced theming engine
 - [ ] Multi-language support
 
 ## 🌍 Community

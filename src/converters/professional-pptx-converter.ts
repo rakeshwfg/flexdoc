@@ -879,7 +879,8 @@ export class ProfessionalPPTXConverter {
       this.pptx = new PptxGenJS();
 
       // Setup design template
-      this.currentTemplate = DesignTemplates.getTemplate(options.theme || 'corporate');
+      const themeName = typeof options.theme === 'string' ? options.theme : 'corporate';
+      this.currentTemplate = DesignTemplates.getTemplate(themeName);
       this.applyGlobalSettings(options);
 
       // Launch browser for accurate rendering

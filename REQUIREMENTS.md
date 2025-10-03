@@ -305,6 +305,7 @@ class FlexDocError extends Error {
 - [x] ~~CLI tool~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Automatic chart generation from tables~~ ✅ **COMPLETED v1.2.0**
+- [x] ~~Advanced theming engine with 25+ presets~~ ✅ **COMPLETED v1.3.0**
 
 #### Phase 3 (Future):
 - [ ] Browser-based version

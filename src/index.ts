@@ -288,6 +288,9 @@ export * from './engines/chart-engine';
 export * from './engines/image-processing-engine';
 export * from './engines/ai-layout-engine';
 
+// Export theme system
+export * from './themes';
+
 // Create and export default instance
 const flexdoc = new FlexDoc();
 export default flexdoc;
