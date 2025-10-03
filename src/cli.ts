@@ -139,6 +139,9 @@ program
   .option('--theme <theme>', 'Theme (default, dark, corporate, creative)', 'default')
   .option('--no-images', 'Exclude images from slides')
   .option('--max-content <chars>', 'Max characters per slide', '500')
+  .option('--no-auto-charts', 'Disable automatic chart generation from tables')
+  .option('--chart-types <types>', 'Preferred chart types (comma-separated: bar,line,pie,area,scatter)', '')
+  .option('--chart-position <position>', 'Chart position (replace, alongside, both)', 'replace')
   .option('--css <file>', 'Custom CSS file to inject')
   .option('--debug', 'Enable debug mode')
   .action(async (input, options) => {
@@ -165,6 +168,11 @@ program
         theme: options.theme as any,
         includeImages: options.images !== false,
         maxContentPerSlide: parseInt(options.maxContent),
+        autoCharts: options.autoCharts !== false,
+        chartOptions: {
+          preferredTypes: options.chartTypes ? options.chartTypes.split(',').map((t: string) => t.trim()) : undefined,
+          position: options.chartPosition as any
+        },
         debug: options.debug,
         customCSS
       };

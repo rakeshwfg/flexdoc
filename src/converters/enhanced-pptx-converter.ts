@@ -7,19 +7,20 @@ import PptxGenJS from 'pptxgenjs';
 import { JSDOM } from 'jsdom';
 import { convert as htmlToText } from 'html-to-text';
 import sharp from 'sharp';
-import { 
-  PPTXOptions, 
-  ConversionResult, 
-  FlexDocError, 
+import {
+  PPTXOptions,
+  ConversionResult,
+  FlexDocError,
   ErrorType,
   HTMLInput
 } from '../types';
+import { ChartEngine, ChartData } from '../engines/chart-engine';
 
 interface EnhancedSlideContent {
   title?: string;
   subtitle?: string;
   content: Array<{
-    type: 'text' | 'list' | 'table' | 'image' | 'code' | 'quote';
+    type: 'text' | 'list' | 'table' | 'image' | 'code' | 'quote' | 'chart';
     data: any;
     style?: any;
   }>;
@@ -131,7 +132,7 @@ export class EnhancedPPTXConverter {
     const sections = this.extractSections(document);
     
     for (const section of sections) {
-      const slideContent = await this.analyzeSection(section);
+      const slideContent = await this.analyzeSection(section, options);
       
       // Apply intelligent splitting if content is too long
       if (this.shouldSplitSlide(slideContent)) {
@@ -196,7 +197,7 @@ export class EnhancedPPTXConverter {
   /**
    * Analyze section content and determine best layout
    */
-  private async analyzeSection(section: Element): Promise<EnhancedSlideContent> {
+  private async analyzeSection(section: Element, options: PPTXOptions): Promise<EnhancedSlideContent> {
     const content: any[] = [];
     const images = section.querySelectorAll('img');
     const tables = section.querySelectorAll('table');
@@ -212,13 +213,46 @@ export class EnhancedPPTXConverter {
     const title = h1?.textContent || h2?.textContent || h3?.textContent || '';
     const subtitle = h1 && h2 ? h2.textContent : '';
     
-    // Process tables
+    // Process tables (and possibly convert to charts)
     tables.forEach(table => {
-      content.push({
-        type: 'table',
-        data: this.extractTableData(table),
-        style: this.analyzeTableStyle(table)
-      });
+      const tableData = this.extractTableData(table);
+
+      // Check if auto-chart conversion is enabled and table should become a chart
+      if (options.autoCharts !== false) { // Default to true
+        const chartData = ChartEngine.analyzeDataForChart(tableData);
+
+        if (this.shouldConvertToChart(tableData, chartData, options)) {
+          // Add chart instead of or alongside table
+          content.push({
+            type: 'chart',
+            data: chartData,
+            style: this.analyzeTableStyle(table)
+          });
+
+          // If position is 'both', also add the table
+          if (options.chartOptions?.position === 'both') {
+            content.push({
+              type: 'table',
+              data: tableData,
+              style: this.analyzeTableStyle(table)
+            });
+          }
+        } else {
+          // Regular table
+          content.push({
+            type: 'table',
+            data: tableData,
+            style: this.analyzeTableStyle(table)
+          });
+        }
+      } else {
+        // Auto-charts disabled, just use table
+        content.push({
+          type: 'table',
+          data: tableData,
+          style: this.analyzeTableStyle(table)
+        });
+      }
     });
     
     // Process lists
@@ -615,7 +649,12 @@ export class EnhancedPPTXConverter {
         this.renderTable(slide, item.data, { x, y, w });
         nextY += 2;
         break;
-        
+
+      case 'chart':
+        this.renderChart(slide, item.data, { x, y, w, h: 3.5 });
+        nextY += 4;
+        break;
+
       case 'image':
         slide.addImage({
           data: item.data.data,
@@ -666,15 +705,15 @@ export class EnhancedPPTXConverter {
    */
   private renderTable(slide: any, tableData: TableData, position: any): void {
     const rows = [
-      tableData.headers.map(h => ({ 
-        text: h, 
-        options: { 
+      tableData.headers.map(h => ({
+        text: h,
+        options: {
           fill: { color: '4472C4' },
           color: 'FFFFFF',
-          bold: true 
-        } 
+          bold: true
+        }
       })),
-      ...tableData.rows.map((row, i) => 
+      ...tableData.rows.map((row, i) =>
         row.map(cell => ({
           text: cell,
           options: {
@@ -683,7 +722,7 @@ export class EnhancedPPTXConverter {
         }))
       )
     ];
-    
+
     slide.addTable(rows, {
       x: position.x,
       y: position.y,
@@ -693,6 +732,13 @@ export class EnhancedPPTXConverter {
       fontSize: 12,
       fontFace: 'Segoe UI'
     });
+  }
+
+  /**
+   * Render chart with professional styling
+   */
+  private renderChart(slide: any, chartData: ChartData, position: any): void {
+    ChartEngine.createPptxChart(slide, chartData, position);
   }
 
   /**
@@ -806,6 +852,29 @@ export class EnhancedPPTXConverter {
       clone.querySelectorAll(tag).forEach(el => el.remove());
     });
     return clone.textContent?.trim() || '';
+  }
+
+  /**
+   * Determine if a table should be converted to a chart
+   */
+  private shouldConvertToChart(tableData: TableData, chartData: ChartData | null, options: PPTXOptions): boolean {
+    if (!chartData) return false;
+
+    // Check row count constraints
+    const minRows = options.chartOptions?.minRows ?? 2;
+    const maxRows = options.chartOptions?.maxRows ?? 50;
+    if (tableData.rows.length < minRows || tableData.rows.length > maxRows) {
+      return false;
+    }
+
+    // Check if preferred chart types match
+    if (options.chartOptions?.preferredTypes && options.chartOptions.preferredTypes.length > 0) {
+      if (!options.chartOptions.preferredTypes.includes(chartData.type)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private analyzeTableStyle(table: Element): any {

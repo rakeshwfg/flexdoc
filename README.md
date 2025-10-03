@@ -197,6 +197,9 @@ flexdoc pptx content.html \
 - `--theme <theme>` - Theme: default, dark, corporate, creative (default: default)
 - `--no-images` - Exclude images from slides
 - `--max-content <chars>` - Max characters per slide (default: 500)
+- `--no-auto-charts` - Disable automatic chart generation from tables
+- `--chart-types <types>` - Preferred chart types (comma-separated: bar,line,pie,area,scatter)
+- `--chart-position <position>` - Chart position: replace, alongside, both (default: replace)
 - `--css <file>` - Custom CSS file to inject
 - `--debug` - Enable debug mode
 
@@ -259,6 +262,12 @@ flexdoc pdf document.html --watermark-image logo.png --watermark-position bottom
 
 # Create presentation from HTML with custom theme
 flexdoc pptx content.html -o slides.pptx --theme dark --split h1 --title "Q4 Report"
+
+# Create presentation with automatic charts from tables
+flexdoc pptx data.html -o charts.pptx --theme corporate --chart-types bar,line
+
+# Disable automatic chart generation (keep tables)
+flexdoc pptx data.html -o tables.pptx --no-auto-charts
 
 # Batch convert multiple documents
 flexdoc batch conversions.json --debug
@@ -426,6 +435,74 @@ const result = await flexdoc.toPPTX(html, {
   theme: 'corporate'
 });
 ```
+
+### Automatic Chart Generation from Tables
+
+FlexDoc can automatically convert HTML tables into beautiful charts in presentations:
+
+```javascript
+const html = `
+  <h1>Quarterly Sales Report</h1>
+  <table>
+    <tr>
+      <th>Region</th>
+      <th>Q1</th>
+      <th>Q2</th>
+      <th>Q3</th>
+      <th>Q4</th>
+    </tr>
+    <tr>
+      <td>North America</td>
+      <td>125000</td>
+      <td>132000</td>
+      <td>145000</td>
+      <td>158000</td>
+    </tr>
+    <tr>
+      <td>Europe</td>
+      <td>98000</td>
+      <td>105000</td>
+      <td>112000</td>
+      <td>120000</td>
+    </tr>
+  </table>
+`;
+
+// Tables automatically convert to charts
+await flexdoc.toPPTX(html, {
+  outputPath: './sales-charts.pptx',
+  autoCharts: true, // Enabled by default
+  theme: 'corporate'
+});
+
+// Customize chart preferences
+await flexdoc.toPPTX(html, {
+  outputPath: './custom-charts.pptx',
+  autoCharts: true,
+  chartOptions: {
+    preferredTypes: ['bar', 'line'], // Prefer specific chart types
+    minRows: 3, // Minimum rows to generate chart
+    maxRows: 50, // Maximum rows for chart
+    showValues: true, // Show data values on chart
+    showLegend: true, // Show chart legend
+    theme: 'colorful', // Chart theme
+    position: 'replace' // 'replace', 'alongside', or 'both'
+  }
+});
+
+// Disable auto-charts (keep tables)
+await flexdoc.toPPTX(html, {
+  outputPath: './with-tables.pptx',
+  autoCharts: false
+});
+```
+
+**Smart Chart Detection:**
+- **Bar Charts**: Multi-series comparison data
+- **Line Charts**: Time series data (years, months, quarters)
+- **Pie Charts**: Single-series data with few categories (≤8)
+- **Area Charts**: Large datasets (>20 points)
+- **Scatter Charts**: Correlation data (2 numeric columns)
 
 ### Add Watermarks to PDFs
 
@@ -699,7 +776,7 @@ For issues, questions, or suggestions, please:
 - [ ] Add support for Excel/CSV export
 - [ ] Implement Word document (.docx) generation
 - [x] ~~Add watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
-- [ ] Support for charts and graphs in presentations
+- [x] ~~Support for charts and graphs in presentations~~ ✅ **COMPLETED v1.2.0**
 - [ ] Cloud storage integration (S3, Google Drive)
 - [x] ~~CLI tool for command-line conversions~~ ✅ **COMPLETED v1.1.0**
 - [ ] Browser-based version

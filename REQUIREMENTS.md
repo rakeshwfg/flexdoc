@@ -304,6 +304,7 @@ class FlexDocError extends Error {
 - [ ] REST API wrapper
 - [x] ~~CLI tool~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
+- [x] ~~Automatic chart generation from tables~~ ✅ **COMPLETED v1.2.0**
 
 #### Phase 3 (Future):
 - [ ] Browser-based version

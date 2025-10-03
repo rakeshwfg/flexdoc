@@ -147,6 +147,25 @@ export interface PPTXOptions extends BaseConversionOptions {
   maxContentPerSlide?: number;
   /** Revision number */
   revision?: string;
+  /** Automatically convert tables to charts when appropriate */
+  autoCharts?: boolean;
+  /** Chart generation preferences */
+  chartOptions?: {
+    /** Prefer specific chart types when auto-detecting */
+    preferredTypes?: ('bar' | 'line' | 'pie' | 'area' | 'scatter' | 'doughnut' | 'radar' | 'bubble')[];
+    /** Minimum rows required to generate a chart (default: 2) */
+    minRows?: number;
+    /** Maximum rows for chart generation (default: 50) */
+    maxRows?: number;
+    /** Show data values on charts */
+    showValues?: boolean;
+    /** Show chart legend */
+    showLegend?: boolean;
+    /** Chart theme: light, dark, colorful */
+    theme?: 'light' | 'dark' | 'colorful';
+    /** Position: replace table or show both */
+    position?: 'replace' | 'alongside' | 'both';
+  };
 }
 
 /**

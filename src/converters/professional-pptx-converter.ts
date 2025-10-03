@@ -7,13 +7,14 @@ import PptxGenJS from 'pptxgenjs';
 import { JSDOM } from 'jsdom';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import sharp from 'sharp';
-import { 
-  PPTXOptions, 
-  ConversionResult, 
-  FlexDocError, 
+import {
+  PPTXOptions,
+  ConversionResult,
+  FlexDocError,
   ErrorType,
   HTMLInput
 } from '../types';
+import { ChartEngine, ChartData } from '../engines/chart-engine';
 
 /**
  * Advanced slide content structure
@@ -859,6 +860,7 @@ export class ProfessionalPPTXConverter {
   private pptx!: PptxGenJS;
   private currentTemplate: any;
   private slideCache: Map<string, any> = new Map();
+  private options: PPTXOptions = {};
 
   /**
    * Convert HTML to Professional PPTX
@@ -870,9 +872,12 @@ export class ProfessionalPPTXConverter {
     const startTime = Date.now();
 
     try {
+      // Store options for use in methods
+      this.options = options;
+
       // Initialize presentation
       this.pptx = new PptxGenJS();
-      
+
       // Setup design template
       this.currentTemplate = DesignTemplates.getTemplate(options.theme || 'corporate');
       this.applyGlobalSettings(options);
@@ -1458,7 +1463,11 @@ export class ProfessionalPPTXConverter {
   }
 
   private addInteractiveChart(slide: any, element: any, position: any): void {
-    // Stub implementation
+    if (element.content && typeof element.content === 'object') {
+      const chartData = element.content as ChartData;
+      const chartPosition = element.position || { x: 1, y: 2, w: 8, h: 4 };
+      ChartEngine.createPptxChart(slide, chartData, chartPosition);
+    }
   }
 
   private addDecorativeShape(slide: any, element: any, position: any): void {
@@ -1520,15 +1529,57 @@ export class ProfessionalPPTXConverter {
   }
 
   private extractTableData(table: Element): any {
-    return { headers: [], rows: [] };
+    const headers: string[] = [];
+    const rows: string[][] = [];
+
+    // Extract headers
+    const headerCells = table.querySelectorAll('th');
+    headerCells.forEach(th => headers.push(th.textContent?.trim() || ''));
+
+    // If no th elements, use first row as headers
+    if (headers.length === 0) {
+      const firstRow = table.querySelector('tr');
+      if (firstRow) {
+        firstRow.querySelectorAll('td').forEach(td =>
+          headers.push(td.textContent?.trim() || '')
+        );
+      }
+    }
+
+    // Extract data rows
+    const dataRows = table.querySelectorAll('tr');
+    dataRows.forEach((tr, index) => {
+      // Skip header row if we extracted headers
+      if (index === 0 && headerCells.length === 0 && headers.length > 0) return;
+      if (tr.querySelector('th')) return; // Skip header rows
+
+      const row: string[] = [];
+      tr.querySelectorAll('td').forEach(td =>
+        row.push(td.textContent?.trim() || '')
+      );
+
+      if (row.length > 0) rows.push(row);
+    });
+
+    return { headers, rows };
   }
 
-  private shouldConvertToChart(table: Element): boolean {
-    return false;
+  private shouldConvertToChart(tableData: any): boolean {
+    if (!tableData || !tableData.rows || tableData.rows.length === 0) return false;
+
+    // Get chart options from current options
+    const options = this.options;
+    if (options.autoCharts === false) return false;
+
+    // Check row constraints
+    const minRows = options.chartOptions?.minRows ?? 2;
+    const maxRows = options.chartOptions?.maxRows ?? 50;
+
+    return tableData.rows.length >= minRows && tableData.rows.length <= maxRows;
   }
 
-  private convertTableToChart(table: Element): any {
-    return null;
+  private convertTableToChart(tableData: any): ChartData | null {
+    return ChartEngine.analyzeDataForChart(tableData);
   }
 
   private optimizeImage(img: HTMLImageElement): any {
