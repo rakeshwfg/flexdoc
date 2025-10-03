@@ -1,6 +1,6 @@
 {
   "name": "flexdoc",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "A flexible, lightweight npm library for converting HTML to PDF, PPTX, and DOCX formats with 25+ professional themes, automatic chart generation, and ML-based layout detection. Enterprise-ready with zero paid dependencies. Includes REST API server and cloud storage integration (S3, Azure, Google Drive).",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
