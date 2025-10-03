@@ -1,0 +1,259 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+out/
+*.js
+*.js.map
+*.d.ts
+!jest.config.js
+!.eslintrc.js
+!.prettierrc.js
+!examples/**/*.js
+!docs/**/*.js
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+config.local.js
+
+# IDE and Editor files
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.iml
+.vim/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+tmp/
+temp/
+logs/
+*.pid
+*.seed
+*.pid.lock
+.tmp/
+
+# Output files (from examples)
+examples/output/
+output/
+*.pdf
+*.pptx
+*.ppt
+*.docx
+!examples/sample.*
+!docs/sample.*
+!test/fixtures/*
+
+# Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Testing
+*.test.js
+*.spec.js
+!src/**/*.test.ts
+!src/**/*.spec.ts
+!tests/**/*
+.jest/
+__snapshots__/
+
+# Documentation build
+docs/_site/
+docs/.sass-cache/
+docs/.jekyll-cache/
+docs/.jekyll-metadata
+docs/vendor/
+!docs/index.html
+!docs/assets/
+
+# Misc
+*.bak
+*.backup
+*.old
+.history/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# Project specific
+flexdoc-temp-*/
+.puppeteer/
+chrome-profile/
+screenshots/
+*.crdownload
+
+# Package files
+*.tgz
+*.tar.gz
+*.zip
+!dist.zip
+
+# Private/Secret files
+private/
+secrets/
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Python (if using any Python scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Ruby (if using any Ruby scripts)
+*.gem
+*.rbc
+.bundle/
+vendor/bundle/
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Videos and large media (except docs)
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mkv
+!docs/demo.mp4
+
+# Deployment
+.vercel
+.netlify
+.firebase/
+.firebaserc
+
+# Performance profiling
+*.cpuprofile
+*.heapsnapshot
+*.heapprofile
+
+# Lock files (keep only one)
+# Uncomment the package manager you're NOT using
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# GitHub Actions
+# Keep workflow files
+!.github/
+
+# Keep important config files
+!.gitignore
+!.npmignore
+!.eslintrc.json
+!.prettierrc
+!tsconfig.json
+!jest.config.js
+!package.json
+!LICENSE
+!README.md
+!REQUIREMENTS.md
+!DEPLOYMENT.md
+!PUBLISHING.md
+!check-availability.sh
+!publish.sh
+
+# Keep source files
+!src/
+!src/**/*.ts
+!examples/
+!tests/
+!docs/
+
+# Temporary working directories
+workspace/
+sandbox/
+scratch/

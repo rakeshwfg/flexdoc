@@ -1,0 +1,17 @@
+# Only publish necessary files
+node_modules/
+src/
+examples/
+tests/
+coverage/
+.vscode/
+.idea/
+*.log
+.env*
+.git*
+tsconfig.json
+jest.config.js
+.eslintrc*
+.prettier*
+*.md
+!README.md
