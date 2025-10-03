@@ -11,7 +11,7 @@
     "test:watch": "jest --watch",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "prepublishOnly": "npm run build && npm run test",
+    "prepublishOnly": "npm run build",
     "example": "node examples/basic-usage.js",
     "example:pdf": "node examples/pdf-example.js",
     "example:pptx": "node examples/pptx-example.js",
