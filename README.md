@@ -1486,20 +1486,35 @@ For issues, questions, or suggestions, please:
 
 ## 🚀 Roadmap
 
-- [ ] Add support for Excel/CSV export
-- [x] ~~Implement Word document (.docx) generation~~ ✅ **COMPLETED v1.4.0**
+### Completed Features ✅
+- [x] ~~CLI tool for command-line conversions~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Add watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Support for charts and graphs in presentations~~ ✅ **COMPLETED v1.2.0**
-- [x] ~~Advanced theming engine~~ ✅ **COMPLETED v1.3.0**
-- [ ] Cloud storage integration (S3, Google Drive)
-- [x] ~~CLI tool for command-line conversions~~ ✅ **COMPLETED v1.1.0**
+- [x] ~~Advanced theming engine (25+ themes)~~ ✅ **COMPLETED v1.3.0**
+- [x] ~~Implement Word document (.docx) generation~~ ✅ **COMPLETED v1.4.0**
+- [x] ~~REST API Server with Docker support~~ ✅ **COMPLETED v1.5.0**
+- [x] ~~Cloud storage integration (S3, Azure Blob Storage)~~ ✅ **COMPLETED v1.6.0**
+- [x] ~~ML-based layout detection~~ ✅ **COMPLETED v1.7.0**
+- [x] ~~Enhanced PPTX with structured content (tables, lists)~~ ✅ **COMPLETED v1.8.0**
+
+### Planned Features 🔮
+- [ ] Add support for Excel/CSV export
+- [ ] Google Drive cloud storage integration
 - [ ] Browser-based version
 - [ ] Template marketplace
 - [ ] Multi-language support
 
 ## 📦 Version History
 
-### v1.8.0 (Current) - PPTX Enhancement Release
+### v1.8.1 (Current) - Maintenance Release
+**Dependency updates and compatibility fixes**
+- Updated all dependencies to latest versions
+- Fixed Puppeteer v24 compatibility (headless mode, buffer handling)
+- Updated jsdom to v27, pptxgenjs to v4, sharp to v0.34
+- Zero security vulnerabilities
+- All tests passing
+
+### v1.8.0 - PPTX Enhancement Release
 **Major improvements to HTML to PowerPoint conversion**
 - Enhanced structured content extraction (tables, lists)
 - Native PPTX table rendering
