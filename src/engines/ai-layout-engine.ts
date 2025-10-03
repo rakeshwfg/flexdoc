@@ -1041,9 +1041,9 @@ export class SmartSplitEngine {
       const sentences = slide.text.split(/[.!?]/);
       if (sentences.length > 3) {
         html = '<ul>' + sentences
-          .filter(s => s.trim())
+          .filter((s: string) => s.trim())
           .slice(0, 5)
-          .map(s => `<li>${s.trim()}</li>`)
+          .map((s: string) => `<li>${s.trim()}</li>`)
           .join('') + '</ul>';
       } else {
         html = `<p>${slide.text}</p>`;

@@ -68,7 +68,7 @@ export class PDFConverter implements IConverter {
       reportProgress('Page Created', 40, 'New page initialized');
 
       // Set content based on input type
-      if (typeof html === 'object' && html.url) {
+      if (typeof html === 'object' && html !== null && 'url' in html && html.url) {
         await page.goto(html.url, { 
           waitUntil: 'networkidle0',
           timeout: mergedOptions.timeout 
@@ -218,18 +218,20 @@ export class PDFConverter implements IConverter {
       return normalizeHTML(html);
     }
 
-    if (html.content) {
-      return normalizeHTML(html.content);
-    }
+    if (typeof html === 'object' && html !== null && !(html instanceof Buffer) && !(html instanceof URL)) {
+      if ('content' in html && html.content) {
+        return normalizeHTML(html.content);
+      }
 
-    if (html.filePath) {
-      const content = await readFileIfExists(html.filePath);
-      return normalizeHTML(content);
-    }
+      if ('filePath' in html && html.filePath) {
+        const content = await readFileIfExists(html.filePath);
+        return normalizeHTML(content);
+      }
 
-    if (html.url) {
-      // URL will be handled differently in convert method
-      return '';
+      if ('url' in html && html.url) {
+        // URL will be handled differently in convert method
+        return '';
+      }
     }
 
     throw new FlexDocError(

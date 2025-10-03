@@ -100,14 +100,14 @@ describe('FlexDoc', () => {
     test('should apply PDF options', async () => {
       const html = '<h1>Custom PDF</h1>';
       const result = await flexdoc.toPDF(html, {
-        format: 'A5',
+        format: 'A3',
         landscape: true,
         printBackground: false,
         scale: 0.8
       });
 
       expect(result.success).toBe(true);
-      expect(result.metadata.options.format).toBe('A5');
+      expect(result.metadata.options.format).toBe('A3');
       expect(result.metadata.options.landscape).toBe(true);
     });
 

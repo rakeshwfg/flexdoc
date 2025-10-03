@@ -6,14 +6,13 @@
 import PptxGenJS from 'pptxgenjs';
 import { JSDOM } from 'jsdom';
 import { convert as htmlToText } from 'html-to-text';
-import { 
-  PPTXOptions, 
-  ConversionResult, 
-  IConverter, 
-  FlexDocError, 
+import {
+  PPTXOptions,
+  ConversionResult,
+  IConverter,
+  FlexDocError,
   ErrorType,
-  HTMLInput,
-  PPTXTheme
+  HTMLInput
 } from '../types';
 import { validateHTML, normalizeHTML, extractImages } from '../utils/validators';
 import { readFileIfExists, writeFileIfPath, downloadImage } from '../utils/file-handler';
@@ -31,11 +30,9 @@ export class PPTXConverter implements IConverter {
     layout: '16x9',
     slideWidth: 10,
     slideHeight: 5.625,
-    splitBy: 'h2',
-    includeImages: true,
-    maxContentPerSlide: 500,
     timeout: 30000,
-    theme: {
+    theme: 'default',
+    template: {
       primary: '#2E86C1',
       secondary: '#85C1E9',
       background: '#FFFFFF',
@@ -207,26 +204,28 @@ export class PPTXConverter implements IConverter {
       return normalizeHTML(html);
     }
 
-    if (html.content) {
-      return normalizeHTML(html.content);
-    }
-
-    if (html.filePath) {
-      const content = await readFileIfExists(html.filePath);
-      return normalizeHTML(content);
-    }
-
-    if (html.url) {
-      // Fetch content from URL
-      const response = await fetch(html.url);
-      if (!response.ok) {
-        throw new FlexDocError(
-          ErrorType.NETWORK_ERROR,
-          `Failed to fetch HTML from URL: ${response.statusText}`
-        );
+    if (typeof html === 'object' && html !== null && !(html instanceof Buffer) && !(html instanceof URL)) {
+      if ('content' in html && html.content) {
+        return normalizeHTML(html.content);
       }
-      const content = await response.text();
-      return normalizeHTML(content);
+
+      if ('filePath' in html && html.filePath) {
+        const content = await readFileIfExists(html.filePath);
+        return normalizeHTML(content);
+      }
+
+      if ('url' in html && html.url) {
+        // Fetch content from URL
+        const response = await fetch(html.url);
+        if (!response.ok) {
+          throw new FlexDocError(
+            ErrorType.NETWORK_ERROR,
+            `Failed to fetch HTML from URL: ${response.statusText}`
+          );
+        }
+        const content = await response.text();
+        return normalizeHTML(content);
+      }
     }
 
     throw new FlexDocError(
@@ -464,7 +463,7 @@ export class PPTXConverter implements IConverter {
   /**
    * Apply theme to presentation
    */
-  private applyTheme(pptx: PptxGenJS, theme: PPTXTheme): void {
+  private applyTheme(pptx: PptxGenJS, theme: any): void {
     // Note: pptxgenjs has limited theme support
     // We'll apply theme colors to individual slides
   }
@@ -494,16 +493,16 @@ export class PPTXConverter implements IConverter {
    * Create individual slide
    */
   private async createSlide(
-    pptx: PptxGenJS, 
-    slideContent: SlideContent, 
+    pptx: PptxGenJS,
+    slideContent: SlideContent,
     options: PPTXOptions
   ): Promise<void> {
     const slide = pptx.addSlide();
-    const theme = options.theme!;
+    const template = options.template || {};
 
     // Add background
-    if (theme.background) {
-      slide.background = { color: theme.background.replace('#', '') };
+    if (template.background) {
+      slide.background = { color: template.background.replace('#', '') };
     }
 
     // Add title
@@ -515,8 +514,8 @@ export class PPTXConverter implements IConverter {
         h: 1,
         fontSize: 24,
         bold: true,
-        color: theme.primary?.replace('#', '') || '2E86C1',
-        fontFace: theme.fontFace || 'Arial'
+        color: template.primary?.replace('#', '') || '2E86C1',
+        fontFace: template.fontFace || 'Arial'
       });
     }
 
@@ -534,9 +533,9 @@ export class PPTXConverter implements IConverter {
         y: 1.8,
         w: 9,
         h: 3,
-        fontSize: theme.fontSize || 14,
-        color: theme.textColor?.replace('#', '') || '333333',
-        fontFace: theme.fontFace || 'Arial',
+        fontSize: template.fontSize || 14,
+        color: template.textColor?.replace('#', '') || '333333',
+        fontFace: template.fontFace || 'Arial',
         valign: 'top',
         isTextBox: true,
         autoFit: true

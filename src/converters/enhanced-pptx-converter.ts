@@ -38,7 +38,7 @@ interface TableData {
 }
 
 export class EnhancedPPTXConverter {
-  private pptx: PptxGenJS;
+  private pptx!: PptxGenJS;
   
   // Professional color schemes
   private colorSchemes = {
@@ -464,7 +464,8 @@ export class EnhancedPPTXConverter {
     options: PPTXOptions
   ): Promise<void> {
     const slide = this.pptx.addSlide();
-    const scheme = this.colorSchemes[options.colorScheme || 'professional'];
+    const schemeName = (options.colorScheme || 'professional') as keyof typeof this.colorSchemes;
+    const scheme = this.colorSchemes[schemeName];
     
     // Apply background
     if (slideContent.background) {
@@ -831,7 +832,9 @@ export class EnhancedPPTXConverter {
 
   private async resolveHTMLContent(html: string | HTMLInput): Promise<string> {
     if (typeof html === 'string') return html;
-    if (html.content) return html.content;
+    if (typeof html === 'object' && html !== null && 'content' in html && html.content) {
+      return html.content;
+    }
     // ... handle other input types
     return '';
   }

@@ -111,6 +111,11 @@ interface ElementStyle {
   opacity?: number;
   rotation?: number;
   effects?: string[];
+  fontFace?: string;
+  fontSize?: number;
+  color?: string;
+  preserveAspectRatio?: boolean;
+  [key: string]: any;
 }
 
 interface AnimationConfig {
@@ -274,7 +279,7 @@ class DesignTemplates {
   };
 
   static getTemplate(name: string) {
-    return this.templates[name] || this.templates.corporate;
+    return (this.templates as any)[name] || this.templates.corporate;
   }
 }
 
@@ -330,11 +335,11 @@ class LayoutEngine {
    * Smart content distribution
    */
   static distributeContent(
-    elements: any[], 
-    container: any, 
+    elements: any[],
+    container: any,
     strategy: string = 'even'
   ): any[] {
-    const positioned = [];
+    const positioned: any[] = [];
     const { x, y, w, h } = container;
 
     switch (strategy) {
@@ -418,7 +423,7 @@ class ContentAnalyzer {
    * Analyze HTML structure and suggest optimal slide breakdown
    */
   static async analyzeContent(document: Document): Promise<any> {
-    const analysis = {
+    const analysis: any = {
       structure: this.analyzeStructure(document),
       semantics: this.analyzeSemantics(document),
       visuals: this.analyzeVisuals(document),
@@ -550,8 +555,8 @@ class ContentAnalyzer {
   private static extractKeywords(text: string): string[] {
     // Simple keyword extraction - in production, use NLP library
     const words = text.toLowerCase().split(/\s+/);
-    const frequency = {};
-    
+    const frequency: { [key: string]: number } = {};
+
     words.forEach(word => {
       if (word.length > 4) {
         frequency[word] = (frequency[word] || 0) + 1;
@@ -559,7 +564,7 @@ class ContentAnalyzer {
     });
 
     return Object.entries(frequency)
-      .sort(([, a], [, b]) => b - a)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
       .slice(0, 10)
       .map(([word]) => word);
   }
@@ -652,7 +657,7 @@ class EffectsEngine {
       rotate: { type: 'spin', duration: 800 }
     };
 
-    return { ...element, animation: animations[type] || animations.fade };
+    return { ...element, animation: (animations as any)[type] || animations.fade };
   }
 
   /**
@@ -680,7 +685,7 @@ class EffectsEngine {
       inner: { type: 'inner', blur: 8, offset: 2, color: '00000030' }
     };
 
-    return { ...element, shadow: shadows[type] || shadows.soft };
+    return { ...element, shadow: (shadows as any)[type] || shadows.soft };
   }
 
   /**
@@ -841,7 +846,7 @@ class TemplateMatchingEngine {
       }
     };
 
-    const style = templateStyles[templateName] || templateStyles['content'];
+    const style = (templateStyles as any)[templateName] || (templateStyles as any)['content'];
     return { ...slide, templateStyle: style };
   }
 }
@@ -851,7 +856,7 @@ class TemplateMatchingEngine {
  */
 export class ProfessionalPPTXConverter {
   private browser: Browser | null = null;
-  private pptx: PptxGenJS;
+  private pptx!: PptxGenJS;
   private currentTemplate: any;
   private slideCache: Map<string, any> = new Map();
 
@@ -960,19 +965,19 @@ export class ProfessionalPPTXConverter {
     const slides: ProfessionalSlideContent[] = [];
 
     // Extract sections with visual context
-    const sections = await page.evaluate(() => {
-      const results = [];
-      
+    const sections: any[] = await page.evaluate(() => {
+      const results: any[] = [];
+
       // Use semantic HTML5 elements first
       let elements = document.querySelectorAll('section, article, .slide');
-      
+
       // Fallback to heading-based sections
       if (elements.length === 0) {
         const headings = document.querySelectorAll('h1, h2, h3');
-        const sections = [];
-        
+        const sections: any[] = [];
+
         headings.forEach((heading, index) => {
-          const section = {
+          const section: any = {
             heading: heading.textContent,
             level: parseInt(heading.tagName[1]),
             content: [],
@@ -1004,7 +1009,7 @@ export class ProfessionalPPTXConverter {
           text: el.textContent,
           bounds: el.getBoundingClientRect(),
           computed: window.getComputedStyle(el),
-          template: TemplateMatchingEngine.matchTemplate(el)
+          template: (TemplateMatchingEngine as any).matchTemplate(el)
         });
       });
 
@@ -1049,19 +1054,19 @@ export class ProfessionalPPTXConverter {
     await this.processDataElements(doc, elements);
 
     // Determine slide type and layout
-    const slideType = this.determineSlideType(elements, section.template);
-    const layout = this.determineOptimalLayout(elements, slideType);
+    const slideType: any = this.determineSlideType(elements);
+    const layout = this.determineOptimalLayout(elements);
 
     return {
       type: slideType,
-      title: section.heading || this.extractTitle(doc),
-      subtitle: this.extractSubtitle(doc),
+      title: section.heading || this.extractTitle(doc.body),
+      subtitle: this.extractSubtitle(doc.body),
       elements,
       layout,
       design: this.currentTemplate,
       animations: this.generateAnimations(elements),
       transitions: this.generateTransition(slideType),
-      speakerNotes: this.extractSpeakerNotes(doc),
+      speakerNotes: this.extractSpeakerNotes(doc.body),
       metadata: {
         originalBounds: section.bounds,
         template: section.template
@@ -1420,7 +1425,141 @@ export class ProfessionalPPTXConverter {
     };
   }
 
-  // ... Implement ALL remaining methods for a complete solution ...
+  private applyVisualHierarchy(element: any): any {
+    return element;
+  }
+
+  private applyVisualEnhancements(elements: any[]): any[] {
+    return elements;
+  }
+
+  private balanceSlideContent(slide: any): any {
+    return slide;
+  }
+
+  private applySlideBackground(slide: any, options: any): void {
+    // Stub implementation
+  }
+
+  private applySlideAnimations(slide: any, elements: any[]): void {
+    // Stub implementation
+  }
+
+  private addStyledText(slide: any, element: any, position: any): void {
+    // Stub implementation
+  }
+
+  private addOptimizedImage(slide: any, element: any, position: any): void {
+    // Stub implementation
+  }
+
+  private addProfessionalTable(slide: any, element: any, position: any): void {
+    // Stub implementation
+  }
+
+  private addInteractiveChart(slide: any, element: any, position: any): void {
+    // Stub implementation
+  }
+
+  private addDecorativeShape(slide: any, element: any, position: any): void {
+    // Stub implementation
+  }
+
+  private addDiagram(slide: any, element: any, position: any): void {
+    // Stub implementation
+  }
+
+  private addVideo(slide: any, element: any, position: any): void {
+    // Stub implementation
+  }
+
+  private calculatePosition(element: any, layout?: any): any {
+    return { x: 1, y: 1, w: 8, h: 4 };
+  }
+
+  private getChartStyle(): any {
+    return {};
+  }
+
+  private getTableStyle(): any {
+    return {};
+  }
+
+  private addPresentationMetadata(options: PPTXOptions): void {
+    if (options.title) this.pptx.title = options.title;
+    if (options.author) this.pptx.author = options.author;
+    if (options.company) this.pptx.company = options.company;
+  }
+
+  private extractTitle(element: Element): string {
+    return element.textContent || '';
+  }
+
+  private extractSubtitle(element: Element): string {
+    return element.textContent || '';
+  }
+
+  private extractSpeakerNotes(element: Element): string {
+    return '';
+  }
+
+  private getHeadingSize(tagName: string): number {
+    const sizes: { [key: string]: number } = {
+      H1: 44,
+      H2: 32,
+      H3: 24,
+      H4: 18,
+      H5: 14,
+      H6: 12
+    };
+    return sizes[tagName] || 14;
+  }
+
+  private extractListHierarchy(list: Element): any[] {
+    return [];
+  }
+
+  private extractTableData(table: Element): any {
+    return { headers: [], rows: [] };
+  }
+
+  private shouldConvertToChart(table: Element): boolean {
+    return false;
+  }
+
+  private convertTableToChart(table: Element): any {
+    return null;
+  }
+
+  private optimizeImage(img: HTMLImageElement): any {
+    return { src: img.src, width: img.width, height: img.height };
+  }
+
+  private detectImageBorder(img: HTMLImageElement): boolean {
+    return false;
+  }
+
+  private determineSlideType(content: any): string {
+    return 'content';
+  }
+
+  private determineOptimalLayout(content: any): any {
+    return {
+      name: 'default',
+      grid: { rows: 1, cols: 1 },
+      margins: { top: 1, right: 1, bottom: 1, left: 1 },
+      alignment: 'left',
+      distribution: 'even'
+    };
+  }
+
+  private generateTransition(type: string): any {
+    return { type: 'fade', duration: 500 };
+  }
+
+  private generateAnimations(elements: any[]): any[] {
+    return [];
+  }
 }
 
 // Export the enhanced converter

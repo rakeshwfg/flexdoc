@@ -14,7 +14,9 @@ import {
   OutputFormat,
   IFlexDoc,
   FlexDocError,
-  ErrorType
+  ErrorType,
+  BatchConversionItem,
+  BatchConversionResult
 } from './types';
 
 /**
@@ -58,16 +60,12 @@ export class FlexDoc implements IFlexDoc {
     // Route to appropriate converter
     switch (options.format) {
       case OutputFormat.PDF:
-        return this.toPDF(html, {
-          ...options,
-          ...options.pdfOptions
-        });
+        const pdfOpts = (options.pdfOptions || options.options || {}) as PDFOptions;
+        return this.toPDF(html, pdfOpts);
 
       case OutputFormat.PPTX:
-        return this.toPPTX(html, {
-          ...options,
-          ...options.pptxOptions
-        });
+        const pptxOpts = (options.pptxOptions || options.options || {}) as PPTXOptions;
+        return this.toPPTX(html, pptxOpts);
 
       default:
         throw new FlexDocError(
@@ -185,6 +183,46 @@ export class FlexDoc implements IFlexDoc {
   }
 
   /**
+   * Convert batch of items
+   */
+  async convertBatch(items: BatchConversionItem[]): Promise<BatchConversionResult> {
+    const startTime = Date.now();
+    const results: Array<{ id?: string; result: ConversionResult }> = [];
+    let successful = 0;
+    let failed = 0;
+
+    for (const item of items) {
+      try {
+        const result = await this.convert(item.html, {
+          format: item.format,
+          options: item.options
+        });
+        results.push({ id: item.id, result });
+        if (result.success) successful++;
+        else failed++;
+      } catch (error) {
+        results.push({
+          id: item.id,
+          result: {
+            success: false,
+            format: item.format,
+            error: error instanceof Error ? error.message : 'Unknown error'
+          }
+        });
+        failed++;
+      }
+    }
+
+    return {
+      total: items.length,
+      successful,
+      failed,
+      results,
+      duration: Date.now() - startTime
+    };
+  }
+
+  /**
    * Validate HTML input
    */
   validateInput(html: string | HTMLInput): boolean {
@@ -206,11 +244,19 @@ export class FlexDoc implements IFlexDoc {
     }
 
     // Validate HTMLInput object
-    if (!html.content && !html.url && !html.filePath) {
-      throw new FlexDocError(
-        ErrorType.INVALID_INPUT,
-        'HTMLInput must have either content, url, or filePath'
-      );
+    if (typeof html === 'object' && html !== null && !(html instanceof Buffer) && !(html instanceof URL)) {
+      if (!('content' in html) && !('url' in html) && !('filePath' in html)) {
+        throw new FlexDocError(
+          ErrorType.INVALID_INPUT,
+          'HTMLInput must have either content, url, or filePath'
+        );
+      }
+      if (!html.content && !html.url && !html.filePath) {
+        throw new FlexDocError(
+          ErrorType.INVALID_INPUT,
+          'HTMLInput must have either content, url, or filePath'
+        );
+      }
     }
 
     return true;
@@ -245,6 +291,3 @@ export * from './engines/ai-layout-engine';
 // Create and export default instance
 const flexdoc = new FlexDoc();
 export default flexdoc;
-
-// Also export the class for custom instances
-export { FlexDoc };

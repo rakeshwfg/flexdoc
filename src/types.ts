@@ -55,6 +55,14 @@ export interface PDFOptions extends BaseConversionOptions {
   scale?: number;
   /** Wait for specific element or time before conversion */
   waitFor?: string | number;
+  /** Custom CSS to inject */
+  customCSS?: string;
+  /** JavaScript to execute before conversion */
+  executeScript?: string;
+  /** Wait for selector before conversion */
+  waitForSelector?: string;
+  /** Prefer CSS page size over options */
+  preferCSSPageSize?: boolean;
 }
 
 /**
@@ -88,6 +96,30 @@ export interface PPTXOptions extends BaseConversionOptions {
   slideNumbers?: boolean;
   /** Theme/template to use */
   theme?: 'default' | 'dark' | 'corporate' | 'creative';
+  /** Add conclusion slide */
+  addConclusion?: boolean;
+  /** Color scheme */
+  colorScheme?: string;
+  /** Slide width in inches */
+  slideWidth?: number;
+  /** Slide height in inches */
+  slideHeight?: number;
+  /** Custom CSS to inject */
+  customCSS?: string;
+  /** JavaScript to execute before conversion */
+  executeScript?: string;
+  /** Wait for selector before conversion */
+  waitForSelector?: string;
+  /** Template configuration */
+  template?: any;
+  /** How to split content into slides */
+  splitBy?: string;
+  /** Include images in slides */
+  includeImages?: boolean;
+  /** Maximum content per slide */
+  maxContentPerSlide?: number;
+  /** Revision number */
+  revision?: string;
 }
 
 /**
@@ -98,6 +130,10 @@ export interface ConversionOptions {
   format: OutputFormat;
   /** Format-specific options */
   options?: PDFOptions | PPTXOptions;
+  /** PDF-specific options (for backward compatibility) */
+  pdfOptions?: PDFOptions;
+  /** PPTX-specific options (for backward compatibility) */
+  pptxOptions?: PPTXOptions;
 }
 
 /**
@@ -159,7 +195,11 @@ export interface FlexDocConfig {
 /**
  * HTML input types
  */
-export type HTMLInput = string | Buffer | URL;
+export type HTMLInput = string | Buffer | URL | {
+  content?: string;
+  url?: string;
+  filePath?: string;
+};
 
 /**
  * Batch conversion item
@@ -193,3 +233,59 @@ export interface BatchConversionResult {
   /** Total duration */
   duration: number;
 }
+
+/**
+ * Error types
+ */
+export enum ErrorType {
+  VALIDATION = 'VALIDATION',
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  CONVERSION = 'CONVERSION',
+  CONVERSION_FAILED = 'CONVERSION_FAILED',
+  FILE_SYSTEM = 'FILE_SYSTEM',
+  FILE_ERROR = 'FILE_ERROR',
+  FILE_WRITE_ERROR = 'FILE_WRITE_ERROR',
+  NETWORK = 'NETWORK',
+  NETWORK_ERROR = 'NETWORK_ERROR',
+  BROWSER_LAUNCH_ERROR = 'BROWSER_LAUNCH_ERROR',
+  INVALID_INPUT = 'INVALID_INPUT',
+  TIMEOUT = 'TIMEOUT',
+  UNKNOWN = 'UNKNOWN'
+}
+
+/**
+ * FlexDoc error class
+ */
+export class FlexDocError extends Error {
+  public originalError?: Error;
+
+  constructor(
+    public type: ErrorType,
+    message: string,
+    originalError?: unknown
+  ) {
+    super(message);
+    this.name = 'FlexDocError';
+    this.originalError = originalError instanceof Error ? originalError : undefined;
+  }
+}
+
+/**
+ * Converter interface
+ */
+export interface IConverter {
+  convert(html: HTMLInput, options?: PDFOptions | PPTXOptions): Promise<ConversionResult>;
+}
+
+/**
+ * FlexDoc interface
+ */
+export interface IFlexDoc {
+  convert(html: HTMLInput, options: ConversionOptions): Promise<ConversionResult>;
+  convertBatch(items: BatchConversionItem[]): Promise<BatchConversionResult>;
+}
+
+/**
+ * Progress info (alias for Progress for backward compatibility)
+ */
+export type ProgressInfo = Progress;
