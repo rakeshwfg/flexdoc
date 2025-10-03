@@ -63,6 +63,33 @@ export interface PDFOptions extends BaseConversionOptions {
   waitForSelector?: string;
   /** Prefer CSS page size over options */
   preferCSSPageSize?: boolean;
+  /** Watermark configuration */
+  watermark?: {
+    /** Watermark text */
+    text?: string;
+    /** Watermark image path or URL */
+    image?: string;
+    /** Position of watermark */
+    position?: 'center' | 'diagonal' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
+    /** Opacity (0-1) */
+    opacity?: number;
+    /** Font size for text watermark */
+    fontSize?: number;
+    /** Text color */
+    color?: string;
+    /** Rotation angle in degrees */
+    rotation?: number;
+    /** Repeat watermark across page */
+    repeat?: boolean;
+    /** Font family for text watermark */
+    fontFamily?: string;
+    /** Font weight */
+    fontWeight?: string | number;
+    /** Image width (for image watermarks) */
+    imageWidth?: number;
+    /** Image height (for image watermarks) */
+    imageHeight?: number;
+  };
 }
 
 /**

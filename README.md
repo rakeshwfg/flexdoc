@@ -85,6 +85,189 @@ const options: PDFOptions = {
 const result = await flexdoc.toPDF(htmlContent, options);
 ```
 
+## 🖥️ CLI Usage
+
+FlexDoc includes a powerful command-line interface for quick conversions.
+
+### Installation
+
+After installing FlexDoc globally or in your project, the `flexdoc` command becomes available:
+
+```bash
+# Global installation
+npm install -g flexdoc
+
+# Or use with npx (no installation needed)
+npx flexdoc --help
+```
+
+### Commands
+
+#### Convert to PDF
+
+```bash
+# Basic usage
+flexdoc pdf input.html -o output.pdf
+
+# With options
+flexdoc pdf input.html \
+  --output document.pdf \
+  --format A4 \
+  --landscape \
+  --margin-top 2cm \
+  --margin-bottom 2cm
+
+# From URL
+flexdoc pdf https://example.com -o webpage.pdf
+
+# With custom CSS
+flexdoc pdf input.html --css styles.css -o styled.pdf
+
+# With header and footer
+flexdoc pdf input.html \
+  --header "<div>My Header</div>" \
+  --footer "<div>Page <span class='pageNumber'></span></div>" \
+  -o document.pdf
+
+# With watermark
+flexdoc pdf document.html \
+  --watermark-text "CONFIDENTIAL" \
+  --watermark-position diagonal \
+  --watermark-opacity 0.3 \
+  -o confidential.pdf
+```
+
+**PDF Options:**
+- `-o, --output <path>` - Output file path (default: output.pdf)
+- `-f, --format <format>` - Paper format: A4, A3, Letter, Legal, Tabloid (default: A4)
+- `-l, --landscape` - Landscape orientation
+- `--margin-top <size>` - Top margin (default: 1cm)
+- `--margin-right <size>` - Right margin (default: 1cm)
+- `--margin-bottom <size>` - Bottom margin (default: 1cm)
+- `--margin-left <size>` - Left margin (default: 1cm)
+- `--scale <number>` - Scale factor 0.1 to 2.0 (default: 1)
+- `--header <template>` - HTML header template
+- `--footer <template>` - HTML footer template
+- `--no-background` - Disable background graphics
+- `--css <file>` - Custom CSS file to inject
+- `--wait <selector>` - Wait for CSS selector before conversion
+- `--watermark-text <text>` - Watermark text
+- `--watermark-image <path>` - Watermark image file path
+- `--watermark-position <position>` - Watermark position: center, diagonal, top-left, top-right, bottom-left, bottom-right, top-center, bottom-center (default: center)
+- `--watermark-opacity <number>` - Watermark opacity 0-1 (default: 0.3)
+- `--watermark-font-size <number>` - Watermark font size (default: 72)
+- `--watermark-color <color>` - Watermark color (default: #000000)
+- `--watermark-rotation <degrees>` - Watermark rotation in degrees (default: 0)
+- `--watermark-repeat` - Repeat watermark across page
+- `--debug` - Enable debug mode
+
+#### Convert to PPTX
+
+```bash
+# Basic usage
+flexdoc pptx input.html -o presentation.pptx
+
+# With options
+flexdoc pptx input.html \
+  --output slides.pptx \
+  --layout 16x9 \
+  --split h1 \
+  --title "My Presentation" \
+  --author "John Doe" \
+  --theme corporate
+
+# From URL
+flexdoc pptx https://example.com/slides -o presentation.pptx
+
+# With custom settings
+flexdoc pptx content.html \
+  --split h2 \
+  --theme dark \
+  --max-content 300 \
+  --no-images
+```
+
+**PPTX Options:**
+- `-o, --output <path>` - Output file path (default: output.pptx)
+- `-l, --layout <layout>` - Slide layout: 16x9, 16x10, 4x3 (default: 16x9)
+- `-s, --split <element>` - Split slides by: h1, h2, h3, hr (default: h2)
+- `-t, --title <title>` - Presentation title
+- `-a, --author <author>` - Presentation author
+- `-c, --company <company>` - Company name
+- `--theme <theme>` - Theme: default, dark, corporate, creative (default: default)
+- `--no-images` - Exclude images from slides
+- `--max-content <chars>` - Max characters per slide (default: 500)
+- `--css <file>` - Custom CSS file to inject
+- `--debug` - Enable debug mode
+
+#### Batch Conversion
+
+Convert multiple files using a JSON configuration:
+
+```bash
+flexdoc batch config.json
+```
+
+**Example config.json:**
+```json
+{
+  "items": [
+    {
+      "input": "report.html",
+      "format": "pdf",
+      "options": {
+        "outputPath": "output/report.pdf",
+        "format": "A4",
+        "printBackground": true
+      }
+    },
+    {
+      "input": "slides.html",
+      "format": "pptx",
+      "options": {
+        "outputPath": "output/presentation.pptx",
+        "layout": "16x9",
+        "theme": "corporate"
+      }
+    }
+  ]
+}
+```
+
+#### System Information
+
+```bash
+flexdoc info
+```
+
+Shows FlexDoc version, Node.js version, and supported formats.
+
+### CLI Examples
+
+```bash
+# Convert HTML file to PDF with custom margins
+flexdoc pdf document.html -o report.pdf --margin-top 3cm --margin-bottom 3cm
+
+# Convert webpage to landscape PDF
+flexdoc pdf https://github.com -o github.pdf --landscape --format Letter
+
+# Add diagonal confidential watermark
+flexdoc pdf report.html --watermark-text "CONFIDENTIAL" --watermark-position diagonal --watermark-opacity 0.2 -o secure.pdf
+
+# Add image watermark
+flexdoc pdf document.html --watermark-image logo.png --watermark-position bottom-right --watermark-opacity 0.5 -o branded.pdf
+
+# Create presentation from HTML with custom theme
+flexdoc pptx content.html -o slides.pptx --theme dark --split h1 --title "Q4 Report"
+
+# Batch convert multiple documents
+flexdoc batch conversions.json --debug
+
+# Get help for a specific command
+flexdoc pdf --help
+flexdoc pptx --help
+```
+
 ## 📖 API Documentation
 
 ### Main Class: `FlexDoc`
@@ -243,6 +426,73 @@ const result = await flexdoc.toPPTX(html, {
   theme: 'corporate'
 });
 ```
+
+### Add Watermarks to PDFs
+
+```javascript
+// Text watermark
+await flexdoc.toPDF(html, {
+  outputPath: './confidential.pdf',
+  watermark: {
+    text: 'CONFIDENTIAL',
+    position: 'diagonal',  // or 'center', 'top-left', 'top-right', etc.
+    opacity: 0.2,
+    fontSize: 80,
+    color: '#FF0000'
+  }
+});
+
+// Image watermark
+await flexdoc.toPDF(html, {
+  outputPath: './branded.pdf',
+  watermark: {
+    image: './logo.png',
+    position: 'bottom-right',
+    opacity: 0.5,
+    imageWidth: 100,
+    imageHeight: 100
+  }
+});
+
+// Repeating watermark pattern
+await flexdoc.toPDF(html, {
+  outputPath: './draft.pdf',
+  watermark: {
+    text: 'DRAFT',
+    repeat: true,
+    opacity: 0.1,
+    fontSize: 40
+  }
+});
+
+// Custom styled watermark
+await flexdoc.toPDF(html, {
+  outputPath: './sample.pdf',
+  watermark: {
+    text: 'SAMPLE',
+    position: 'center',
+    opacity: 0.3,
+    fontSize: 72,
+    color: '#3498db',
+    rotation: -45,
+    fontFamily: 'Arial Black',
+    fontWeight: 'bold'
+  }
+});
+```
+
+**Watermark Options:**
+- `text` - Watermark text
+- `image` - Path to watermark image
+- `position` - Placement: center, diagonal, top-left, top-right, bottom-left, bottom-right, top-center, bottom-center
+- `opacity` - Transparency (0-1)
+- `fontSize` - Font size for text watermarks
+- `color` - Text color (hex or named)
+- `rotation` - Rotation angle in degrees
+- `repeat` - Repeat across entire page
+- `fontFamily` - Font family for text
+- `fontWeight` - Font weight
+- `imageWidth` / `imageHeight` - Image dimensions
 
 ### Progress Tracking
 
@@ -448,10 +698,10 @@ For issues, questions, or suggestions, please:
 
 - [ ] Add support for Excel/CSV export
 - [ ] Implement Word document (.docx) generation
-- [ ] Add watermark support for PDFs
+- [x] ~~Add watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
 - [ ] Support for charts and graphs in presentations
 - [ ] Cloud storage integration (S3, Google Drive)
-- [ ] CLI tool for command-line conversions
+- [x] ~~CLI tool for command-line conversions~~ ✅ **COMPLETED v1.1.0**
 - [ ] Browser-based version
 - [ ] Template marketplace
 - [ ] Advanced theming engine

@@ -1,0 +1,31 @@
+{
+  "items": [
+    {
+      "input": "examples/sample.html",
+      "format": "pdf",
+      "options": {
+        "outputPath": "output/sample1.pdf",
+        "format": "A4",
+        "printBackground": true
+      }
+    },
+    {
+      "input": "examples/sample.html",
+      "format": "pptx",
+      "options": {
+        "outputPath": "output/sample1.pptx",
+        "layout": "16x9",
+        "splitBy": "h2",
+        "theme": "corporate"
+      }
+    },
+    {
+      "input": "https://example.com",
+      "format": "pdf",
+      "options": {
+        "outputPath": "output/webpage.pdf",
+        "format": "A4"
+      }
+    }
+  ]
+}

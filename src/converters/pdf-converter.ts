@@ -15,6 +15,7 @@ import {
 } from '../types';
 import { validateHTML, normalizeHTML, isValidURL } from '../utils/validators';
 import { readFileIfExists, writeFileIfPath } from '../utils/file-handler';
+import { injectWatermark } from '../utils/watermark';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -56,8 +57,14 @@ export class PDFConverter implements IConverter {
       reportProgress('Initializing', 0, 'Starting PDF conversion');
 
       // Get HTML content
-      const htmlContent = await this.resolveHTMLContent(html);
+      let htmlContent = await this.resolveHTMLContent(html);
       reportProgress('HTML Resolved', 20, 'HTML content loaded');
+
+      // Inject watermark if provided
+      if (mergedOptions.watermark) {
+        htmlContent = await injectWatermark(htmlContent, mergedOptions.watermark);
+        reportProgress('Watermark Added', 25, 'Watermark injected into content');
+      }
 
       // Launch browser
       this.browser = await this.launchBrowser();
@@ -69,14 +76,32 @@ export class PDFConverter implements IConverter {
 
       // Set content based on input type
       if (typeof html === 'object' && html !== null && 'url' in html && html.url) {
-        await page.goto(html.url, { 
+        await page.goto(html.url, {
           waitUntil: 'networkidle0',
-          timeout: mergedOptions.timeout 
+          timeout: mergedOptions.timeout
         });
+
+        // Inject watermark for URL-based content
+        if (mergedOptions.watermark) {
+          const watermarkCSS = await import('../utils/watermark').then(m => m.generateWatermarkCSS(mergedOptions.watermark!));
+          const watermarkHTML = await import('../utils/watermark').then(m => m.generateWatermarkHTML(mergedOptions.watermark!));
+
+          await page.evaluate((css, html) => {
+            const styleEl = document.createElement('div');
+            styleEl.innerHTML = css;
+            document.head.appendChild(styleEl.firstChild!);
+
+            if (html) {
+              const watermarkEl = document.createElement('div');
+              watermarkEl.innerHTML = html;
+              document.body.appendChild(watermarkEl.firstChild!);
+            }
+          }, watermarkCSS, watermarkHTML);
+        }
       } else {
-        await page.setContent(htmlContent, { 
+        await page.setContent(htmlContent, {
           waitUntil: 'networkidle0',
-          timeout: mergedOptions.timeout 
+          timeout: mergedOptions.timeout
         });
       }
       reportProgress('Content Loaded', 50, 'HTML content rendered');

@@ -113,6 +113,29 @@ await flexdoc.batchConvert(inputs);
 await flexdoc.convertWithRetry(html, options, maxRetries);
 ```
 
+#### 3.4 CLI Interface ✅ v1.0.1
+```bash
+# PDF conversion
+flexdoc pdf input.html -o output.pdf --format A4 --landscape
+
+# PPTX conversion
+flexdoc pptx input.html -o slides.pptx --theme corporate --split h1
+
+# Batch conversion
+flexdoc batch config.json
+
+# System info
+flexdoc info
+```
+
+**CLI Features**:
+- Full command-line interface using Commander.js
+- Support for all PDF and PPTX options
+- Batch conversion with JSON config
+- Progress tracking in terminal
+- Human-readable output formatting
+- Works with npx (no global installation needed)
+
 ### 4. Professional PPTX Features (Adobe-level)
 
 #### 4.1 AI-Powered Layout Optimization
@@ -155,7 +178,14 @@ await flexdoc.convertWithRetry(html, options, maxRetries);
   - Background removal
   - Enhancement (contrast, sharpness)
   - Collage creation (grid, masonry, hero)
-  - Watermarking
+
+- **Watermark Support** ✅ v1.1.0:
+  - Text and image watermarks
+  - Multiple positioning options (center, diagonal, corners)
+  - Opacity control
+  - Rotation support
+  - Repeating patterns
+  - Custom styling (font, color, size)
 
 #### 4.4 Template System
 - **Professional Templates**:
@@ -225,7 +255,8 @@ interface ConversionResult {
     "pptxgenjs": "^3.12.0",      // PPTX creation
     "jsdom": "^23.0.0",          // HTML parsing
     "sharp": "^0.33.0",          // Image processing
-    "html-to-text": "^9.0.5"     // Text extraction
+    "html-to-text": "^9.0.5",    // Text extraction
+    "commander": "^14.0.1"       // CLI interface ✅ v1.0.1
   }
 }
 ```
@@ -271,7 +302,8 @@ class FlexDocError extends Error {
 - [ ] Advanced ML-based layout detection
 - [ ] Cloud storage integration
 - [ ] REST API wrapper
-- [ ] CLI tool
+- [x] ~~CLI tool~~ ✅ **COMPLETED v1.1.0**
+- [x] ~~Watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
 
 #### Phase 3 (Future):
 - [ ] Browser-based version
