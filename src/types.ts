@@ -19,6 +19,8 @@ export interface BaseConversionOptions {
   cloudOutput?: string;
   /** Cloud storage credentials */
   cloudCredentials?: import('./cloud').CloudCredentials;
+  /** ML-based layout detection options */
+  mlLayout?: import('./ml').MLLayoutOptions;
   /** Enable debug logging */
   debug?: boolean;
   /** Timeout in milliseconds */

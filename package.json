@@ -1,7 +1,7 @@
 {
   "name": "flexdoc",
-  "version": "1.6.0",
-  "description": "A flexible, lightweight npm library for converting HTML to PDF, PPTX, and DOCX formats with 25+ professional themes and automatic chart generation. Enterprise-ready with zero paid dependencies. Includes REST API server and cloud storage integration (S3, Azure, Google Drive).",
+  "version": "1.7.0",
+  "description": "A flexible, lightweight npm library for converting HTML to PDF, PPTX, and DOCX formats with 25+ professional themes, automatic chart generation, and ML-based layout detection. Enterprise-ready with zero paid dependencies. Includes REST API server and cloud storage integration (S3, Azure, Google Drive).",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -71,7 +71,15 @@
     "aws",
     "azure",
     "google-drive",
-    "cloud-integration"
+    "cloud-integration",
+    "machine-learning",
+    "ml",
+    "ai",
+    "layout-detection",
+    "content-analysis",
+    "intelligent-layout",
+    "smart-grouping",
+    "content-scoring"
   ],
   "author": "Rakesh Singh",
   "license": "MIT",

@@ -362,6 +362,9 @@ export * from './themes';
 // Export cloud storage system
 export * from './cloud';
 
+// Export ML layout detection system
+export * from './ml';
+
 // Create and export default instance
 const flexdoc = new FlexDoc();
 export default flexdoc;

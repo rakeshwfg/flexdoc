@@ -296,19 +296,18 @@ class FlexDocError extends Error {
 - ✅ Chart generation
 - ✅ Image processing
 
-#### Phase 2 (In Progress):
-- [x] ~~Word document (.docx) support~~ ✅ **COMPLETED v1.4.0**
-- [x] ~~REST API wrapper~~ ✅ **COMPLETED v1.5.0**
-- [x] ~~Cloud storage integration~~ ✅ **COMPLETED v1.6.0**
-- [ ] Excel (.xlsx) generation
-- [ ] Advanced ML-based layout detection
+#### Phase 2 (Completed):
 - [x] ~~CLI tool~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Automatic chart generation from tables~~ ✅ **COMPLETED v1.2.0**
 - [x] ~~Advanced theming engine with 25+ presets~~ ✅ **COMPLETED v1.3.0**
 - [x] ~~Word document (.docx) support~~ ✅ **COMPLETED v1.4.0**
+- [x] ~~REST API wrapper~~ ✅ **COMPLETED v1.5.0**
+- [x] ~~Cloud storage integration~~ ✅ **COMPLETED v1.6.0**
+- [x] ~~Advanced ML-based layout detection~~ ✅ **COMPLETED v1.7.0**
 
 #### Phase 3 (Future):
+- [ ] Excel (.xlsx) generation
 - [ ] Browser-based version
 - [ ] Real-time collaboration
 - [ ] Template marketplace
