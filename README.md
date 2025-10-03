@@ -666,8 +666,8 @@ Your support helps maintain and improve FlexDoc:
 
 Need dedicated support, custom features, or consulting?
 
-- 📧 Email: your.email@example.com
-- 🔗 LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
+- 📧 Email: rakesh16@gmail.com
+- 🔗 LinkedIn: [Your LinkedIn Profile](https://www.linkedin.com/in/rakesh-singh-1ab4563/)
 - 💼 Custom development and integration services available
 
 ### 🙏 Thank You!
