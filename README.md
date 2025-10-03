@@ -1457,7 +1457,7 @@ Your support helps maintain and improve FlexDoc:
 Need dedicated support, custom features, or consulting?
 
 - 📧 Email: rakesh16@gmail.com
-- 🔗 LinkedIn: [Your LinkedIn Profile](https://www.linkedin.com/in/rakesh-singh-1ab4563/)
+- 🔗 LinkedIn: [Rakesh Singh](https://www.linkedin.com/in/rakesh-singh-1ab4563/)
 - 💼 Custom development and integration services available
 
 ### 🙏 Thank You!
