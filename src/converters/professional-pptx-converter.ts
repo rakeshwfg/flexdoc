@@ -15,6 +15,7 @@ import {
   HTMLInput
 } from '../types';
 import { ChartEngine, ChartData } from '../engines/chart-engine';
+import { ContentIntelligence } from '../engines/ai-layout-engine';
 
 /**
  * Advanced slide content structure
@@ -893,11 +894,9 @@ export class ProfessionalPPTXConverter {
       
       // Take screenshot for visual reference
       const screenshot = await page.screenshot({ fullPage: true });
-      
-      // Perform content analysis
-      const analysis = await page.evaluate(() => {
-        return ContentAnalyzer.analyzeContent(document);
-      });
+
+      // Perform content analysis using AI layout engine
+      const analysis = ContentIntelligence.analyzeContent(htmlContent);
 
       // Extract and process content
       const slides = await this.extractProfessionalSlides(page, analysis, options);
@@ -935,12 +934,13 @@ export class ProfessionalPPTXConverter {
         }
       };
 
-    } catch (error) {
+    } catch (error: any) {
       if (this.browser) await this.browser.close();
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
       throw new FlexDocError(
         ErrorType.CONVERSION_FAILED,
-        `Professional PPTX conversion failed: ${error}`,
-        error
+        `Professional PPTX conversion failed: ${errorMessage}`,
+        { originalError: error, stack: error?.stack }
       );
     }
   }

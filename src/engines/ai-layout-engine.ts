@@ -738,7 +738,7 @@ export class ContentIntelligence {
     
     const walker = document.createTreeWalker(
       document.body,
-      NodeFilter.SHOW_ELEMENT,
+      1, // NodeFilter.SHOW_ELEMENT
       null
     );
     
@@ -833,7 +833,7 @@ export class SmartSplitEngine {
     
     const walker = document.createTreeWalker(
       document.body,
-      NodeFilter.SHOW_ELEMENT,
+      1, // NodeFilter.SHOW_ELEMENT
       null
     );
     

@@ -23,6 +23,9 @@ interface SlideContent {
   content: string;
   images?: Array<{ src: string; alt?: string }>;
   level: number;
+  tables?: Array<any>;
+  lists?: Array<{ type: 'ul' | 'ol'; items: string[] }>;
+  structured?: boolean;
 }
 
 export class PPTXConverter implements IConverter {
@@ -283,7 +286,7 @@ export class PPTXConverter implements IConverter {
       const firstSplitElement = splitElements[0];
       const walker = document.createTreeWalker(
         document.body,
-        NodeFilter.SHOW_ELEMENT,
+        1, // NodeFilter.SHOW_ELEMENT
         null
       );
 
@@ -303,34 +306,70 @@ export class PPTXConverter implements IConverter {
 
       // Process each split section
       splitElements.forEach((element, index) => {
-        const nextElement = splitElements[index + 1];
-        const contentNodes: Node[] = [];
-        
-        // Get all siblings until next split element
-        let sibling = element.nextSibling;
-        while (sibling && sibling !== nextElement) {
-          contentNodes.push(sibling);
-          sibling = sibling.nextSibling;
-        }
+        // For semantic elements like <section>, extract content from inside
+        // For heading elements, extract content between them
+        const isSemanticElement = ['SECTION', 'ARTICLE', 'DIV'].includes(element.tagName);
 
-        // Extract content
-        const title = element.textContent || `Slide ${index + 2}`;
+        let title = '';
         let content = '';
         const images: any[] = [];
 
-        contentNodes.forEach(node => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const elem = node as Element;
-            content += this.extractTextContent(elem) + '\n';
-            
-            if (options.includeImages) {
-              const nodeImages = extractImages(elem.outerHTML);
-              images.push(...nodeImages);
-            }
-          } else if (node.nodeType === Node.TEXT_NODE) {
-            content += node.textContent + '\n';
+        if (isSemanticElement) {
+          // Extract title from first heading inside the section
+          const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+          title = heading?.textContent?.trim() || `Slide ${index + 1}`;
+
+          // Extract structured content
+          const structured = this.extractStructuredContent(element);
+          content = structured.content;
+          const tables = structured.tables;
+          const lists = structured.lists;
+
+          if (options.includeImages) {
+            const sectionImages = extractImages(element.innerHTML);
+            images.push(...sectionImages);
           }
-        });
+
+          // Create slide with structured content
+          if (content.trim() || images.length > 0 || tables.length > 0 || lists.length > 0) {
+            slides.push({
+              title,
+              content: content.trim(),
+              images,
+              tables,
+              lists,
+              structured: true,
+              level: this.getHeadingLevel(element.tagName)
+            });
+          }
+          return; // Skip the common push at the end
+        } else {
+          // For headings, get content between this and next heading
+          const nextElement = splitElements[index + 1];
+          const contentNodes: any[] = [];
+
+          let sibling = element.nextSibling;
+          while (sibling && sibling !== nextElement) {
+            contentNodes.push(sibling);
+            sibling = sibling.nextSibling;
+          }
+
+          title = element.textContent?.trim() || `Slide ${index + 1}`;
+
+          contentNodes.forEach(node => {
+            if (node.nodeType === 1) { // ELEMENT_NODE
+              const elem = node as Element;
+              content += this.extractTextContent(elem) + '\n';
+
+              if (options.includeImages) {
+                const nodeImages = extractImages(elem.outerHTML);
+                images.push(...nodeImages);
+              }
+            } else if (node.nodeType === 3) { // TEXT_NODE
+              content += node.textContent + '\n';
+            }
+          });
+        }
 
         if (content.trim() || images.length > 0) {
           slides.push({
@@ -359,7 +398,7 @@ export class PPTXConverter implements IConverter {
     // Get all text nodes
     const walker = document.createTreeWalker(
       document.body,
-      NodeFilter.SHOW_TEXT,
+      4, // NodeFilter.SHOW_TEXT
       null
     );
 
@@ -407,6 +446,76 @@ export class PPTXConverter implements IConverter {
   /**
    * Extract text content from element
    */
+  /**
+   * Extract structured content (tables, lists, text)
+   */
+  private extractStructuredContent(element: Element): {
+    content: string;
+    tables: any[];
+    lists: Array<{ type: 'ul' | 'ol'; items: string[] }>;
+  } {
+    const tables: any[] = [];
+    const lists: Array<{ type: 'ul' | 'ol'; items: string[] }> = [];
+    let textContent = '';
+
+    // Extract tables
+    const tableElements = element.querySelectorAll('table');
+    tableElements.forEach((table) => {
+      const rows: any[] = [];
+      const trs = table.querySelectorAll('tr');
+
+      trs.forEach((tr) => {
+        const row: any[] = [];
+        const cells = tr.querySelectorAll('th, td');
+        cells.forEach((cell) => {
+          row.push({
+            text: cell.textContent?.trim() || '',
+            options: {
+              bold: cell.tagName === 'TH',
+              fill: cell.tagName === 'TH' ? 'E7E6E6' : undefined
+            }
+          });
+        });
+        rows.push(row);
+      });
+
+      if (rows.length > 0) {
+        tables.push(rows);
+      }
+    });
+
+    // Extract lists
+    const listElements = element.querySelectorAll('ul, ol');
+    listElements.forEach((list) => {
+      const items: string[] = [];
+      const lis = list.querySelectorAll('li');
+      lis.forEach((li) => {
+        items.push(li.textContent?.trim() || '');
+      });
+
+      if (items.length > 0) {
+        lists.push({
+          type: list.tagName.toLowerCase() as 'ul' | 'ol',
+          items
+        });
+      }
+    });
+
+    // Extract remaining text content (excluding tables and lists for cleaner output)
+    const clone = element.cloneNode(true) as Element;
+    clone.querySelectorAll('table, ul, ol').forEach(el => el.remove());
+    textContent = htmlToText(clone.innerHTML, {
+      wordwrap: false,
+      preserveNewlines: true,
+      selectors: [
+        { selector: 'img', format: 'skip' },
+        { selector: 'a', options: { ignoreHref: true } }
+      ]
+    });
+
+    return { content: textContent, tables, lists };
+  }
+
   private extractTextContent(element: Element): string {
     return htmlToText(element.innerHTML, {
       wordwrap: false,
@@ -505,46 +614,105 @@ export class PPTXConverter implements IConverter {
       slide.background = { color: template.background.replace('#', '') };
     }
 
+    let currentY = 0.5;
+
     // Add title
     if (slideContent.title) {
       slide.addText(slideContent.title, {
         x: 0.5,
-        y: 0.5,
+        y: currentY,
         w: 9,
-        h: 1,
-        fontSize: 24,
+        h: 0.8,
+        fontSize: 28,
         bold: true,
-        color: template.primary?.replace('#', '') || '2E86C1',
+        color: template.primary?.replace('#', '') || '1F4788',
         fontFace: template.fontFace || 'Arial'
       });
+      currentY += 1.2;
     }
 
-    // Add content
-    if (slideContent.content) {
-      // Split content into bullet points if it contains list markers
-      const lines = slideContent.content.split('\n').filter(line => line.trim());
-      const bullets = lines.map(line => ({
-        text: line.trim(),
-        options: { bullet: true }
-      }));
+    // Handle structured content if available
+    if (slideContent.structured) {
+      // Add tables
+      if (slideContent.tables && slideContent.tables.length > 0) {
+        for (const tableData of slideContent.tables) {
+          slide.addTable(tableData, {
+            x: 0.5,
+            y: currentY,
+            w: 9,
+            fontSize: 12,
+            border: { type: 'solid', pt: 1, color: 'CFCFCF' },
+            align: 'left',
+            valign: 'middle'
+          });
+          currentY += Math.min(tableData.length * 0.4 + 0.5, 3.5);
+        }
+      }
 
-      slide.addText(bullets.length > 1 ? bullets : slideContent.content, {
-        x: 0.5,
-        y: 1.8,
-        w: 9,
-        h: 3,
-        fontSize: template.fontSize || 14,
-        color: template.textColor?.replace('#', '') || '333333',
-        fontFace: template.fontFace || 'Arial',
-        valign: 'top',
-        isTextBox: true,
-        autoFit: true
-      });
+      // Add lists
+      if (slideContent.lists && slideContent.lists.length > 0) {
+        for (const list of slideContent.lists) {
+          const bullets = list.items.map((item, idx) => ({
+            text: list.type === 'ol' ? `${idx + 1}. ${item}` : item,
+            options: { bullet: list.type === 'ul' ? { code: '2022' } : false }
+          }));
+
+          slide.addText(bullets, {
+            x: 0.7,
+            y: currentY,
+            w: 8.5,
+            h: Math.min(list.items.length * 0.35, 3),
+            fontSize: 16,
+            color: '333333',
+            fontFace: template.fontFace || 'Arial',
+            valign: 'top'
+          });
+          currentY += Math.min(list.items.length * 0.35 + 0.3, 3.3);
+        }
+      }
+
+      // Add remaining text content
+      if (slideContent.content && slideContent.content.trim()) {
+        slide.addText(slideContent.content, {
+          x: 0.5,
+          y: currentY,
+          w: 9,
+          h: Math.min(5.625 - currentY - 0.3, 2.5),
+          fontSize: 14,
+          color: '444444',
+          fontFace: template.fontFace || 'Arial',
+          valign: 'top',
+          isTextBox: true
+        });
+      }
+    } else {
+      // Legacy content handling
+      if (slideContent.content) {
+        const lines = slideContent.content.split('\n').filter(line => line.trim());
+        const bullets = lines.map(line => ({
+          text: line.trim(),
+          options: { bullet: true }
+        }));
+
+        slide.addText(bullets.length > 1 ? bullets : slideContent.content, {
+          x: 0.5,
+          y: currentY,
+          w: 9,
+          h: 3.5,
+          fontSize: template.fontSize || 16,
+          color: template.textColor?.replace('#', '') || '333333',
+          fontFace: template.fontFace || 'Arial',
+          valign: 'top',
+          isTextBox: true,
+          autoFit: true
+        });
+      }
     }
 
     // Add images if available
     if (slideContent.images && slideContent.images.length > 0 && options.includeImages) {
-      for (let i = 0; i < Math.min(slideContent.images.length, 2); i++) {
+      const imageCount = Math.min(slideContent.images.length, 2);
+      for (let i = 0; i < imageCount; i++) {
         const image = slideContent.images[i];
         try {
           // Download image if it's a URL
@@ -552,19 +720,19 @@ export class PPTXConverter implements IConverter {
             const imageBuffer = await downloadImage(image.src);
             slide.addImage({
               data: `data:image/png;base64,${imageBuffer.toString('base64')}`,
-              x: 5 + (i * 2.5),
-              y: 2,
-              w: 2,
-              h: 2
+              x: 6 + (i * 2),
+              y: 2.5,
+              w: 1.8,
+              h: 1.8
             });
           } else {
             // Local image
             slide.addImage({
               path: image.src,
-              x: 5 + (i * 2.5),
-              y: 2,
-              w: 2,
-              h: 2
+              x: 6 + (i * 2),
+              y: 2.5,
+              w: 1.8,
+              h: 1.8
             });
           }
         } catch (error) {

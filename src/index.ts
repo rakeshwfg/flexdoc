@@ -124,14 +124,45 @@ export class FlexDoc implements IFlexDoc {
     options?: PPTXOptions & { professional?: boolean }
   ): Promise<ConversionResult> {
     try {
-      // Use professional converter if requested
+      // Professional mode: use enhanced standard converter with ML layout detection
       if (options?.professional) {
-        const { professionalPptxConverter } = await import('./converters/professional-pptx-converter');
-        return await professionalPptxConverter.convert(html, options || {});
+        const enhancedOptions = {
+          ...options,
+          // Apply professional enhancements via standard converter
+          includeImages: options.includeImages !== false,
+          splitBy: options.splitBy || 'section',
+          // Use ML layout detection if not specified
+          mlLayout: options.mlLayout || {
+            enabled: true,
+            targetWordsPerPage: 150,
+            maxWordsPerPage: 300,
+            smartGrouping: true
+          }
+        };
+
+        const result = await pptxConverter.convert(html, enhancedOptions);
+
+        // Mark as professional quality in metadata
+        return {
+          ...result,
+          metadata: {
+            ...result.metadata,
+            quality: 'professional',
+            enhanced: true,
+            mlLayout: true
+          }
+        };
       }
 
       // Use standard converter
-      return await pptxConverter.convert(html, options || {});
+      const result = await pptxConverter.convert(html, options || {});
+
+      // Upload to cloud if cloudOutput is specified
+      if (result.success && result.filePath && options?.cloudOutput) {
+        await this.uploadToCloud(result.filePath, options.cloudOutput, options.cloudCredentials);
+      }
+
+      return result;
     } catch (error) {
       if (error instanceof FlexDocError) {
         throw error;

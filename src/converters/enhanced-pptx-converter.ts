@@ -455,7 +455,7 @@ export class EnhancedPPTXConverter {
     const comments = [];
     const walker = document.createTreeWalker(
       section,
-      NodeFilter.SHOW_COMMENT,
+      128, // NodeFilter.SHOW_COMMENT
       null
     );
     
