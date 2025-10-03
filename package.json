@@ -1,7 +1,7 @@
 {
   "name": "flexdoc",
-  "version": "1.4.0",
-  "description": "A flexible, lightweight npm library for converting HTML to PDF, PPTX, and DOCX formats with 25+ professional themes and automatic chart generation. Enterprise-ready with zero paid dependencies.",
+  "version": "1.5.0",
+  "description": "A flexible, lightweight npm library for converting HTML to PDF, PPTX, and DOCX formats with 25+ professional themes and automatic chart generation. Enterprise-ready with zero paid dependencies. Includes REST API server.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -10,6 +10,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "serve": "node dist/api/cli.js",
+    "serve:dev": "tsc && node dist/api/cli.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint src/**/*.ts",
@@ -22,7 +24,10 @@
     "example:advanced": "node examples/advanced-usage.js",
     "example:professional": "node examples/professional-pptx.js",
     "example:charts": "node examples/charts-example.js",
-    "example:themes": "node examples/themes-example.js"
+    "example:themes": "node examples/themes-example.js",
+    "docker:build": "docker build -t flexdoc-api .",
+    "docker:run": "docker-compose up -d",
+    "docker:stop": "docker-compose down"
   },
   "keywords": [
     "html",
@@ -53,7 +58,14 @@
     "theming",
     "branding",
     "customization",
-    "design-system"
+    "design-system",
+    "rest-api",
+    "api-server",
+    "microservice",
+    "express",
+    "docker",
+    "swagger",
+    "openapi"
   ],
   "author": "Rakesh Singh",
   "license": "MIT",
@@ -70,18 +82,28 @@
   },
   "dependencies": {
     "commander": "^14.0.1",
+    "cors": "^2.8.5",
     "docx": "^9.5.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
     "html-to-text": "^9.0.5",
     "jsdom": "^23.0.0",
+    "multer": "^2.0.2",
     "pptxgenjs": "^3.12.0",
     "puppeteer": "^21.0.0",
-    "sharp": "^0.33.0"
+    "sharp": "^0.33.0",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/html-to-text": "^9.0.4",
     "@types/jest": "^29.5.0",
     "@types/jsdom": "^21.1.0",
+    "@types/multer": "^2.0.0",
     "@types/node": "^20.0.0",
+    "@types/swagger-ui-express": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",

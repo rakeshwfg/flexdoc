@@ -456,6 +456,40 @@ program
     console.log('Example: flexdoc pptx input.html --theme tech-purple\n');
   });
 
+// Serve Command - Start REST API server
+program
+  .command('serve')
+  .description('Start FlexDoc REST API server')
+  .option('-p, --port <port>', 'Server port', '3000')
+  .option('-h, --host <host>', 'Server host', '0.0.0.0')
+  .option('--upload-dir <dir>', 'Upload directory', './uploads')
+  .option('--output-dir <dir>', 'Output directory', './outputs')
+  .option('--max-size <bytes>', 'Max file size in bytes', '52428800') // 50MB
+  .option('--enable-auth', 'Enable API key authentication', false)
+  .option('--api-key <key>', 'API key (if auth enabled)')
+  .option('--cors-origins <origins>', 'CORS allowed origins (comma-separated)', '*')
+  .action(async (options) => {
+    try {
+      const { startServer } = await import('./api/server');
+
+      console.log('🚀 Starting FlexDoc API server...\n');
+
+      await startServer({
+        port: parseInt(options.port),
+        host: options.host,
+        uploadDir: options.uploadDir,
+        outputDir: options.outputDir,
+        maxFileSize: parseInt(options.maxSize),
+        enableAuth: options.enableAuth,
+        apiKey: options.apiKey,
+        corsOrigins: options.corsOrigins === '*' ? ['*'] : options.corsOrigins.split(',')
+      });
+    } catch (error) {
+      console.error(`❌ Error starting server: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      process.exit(1);
+    }
+  });
+
 /**
  * Helper: Read input from file or URL
  */
