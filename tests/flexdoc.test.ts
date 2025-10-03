@@ -107,8 +107,8 @@ describe('FlexDoc', () => {
       });
 
       expect(result.success).toBe(true);
-      expect(result.metadata.options.format).toBe('A3');
-      expect(result.metadata.options.landscape).toBe(true);
+      expect(result.metadata?.options.format).toBe('A3');
+      expect(result.metadata?.options.landscape).toBe(true);
     });
 
     test('should handle progress callback', async () => {
@@ -136,7 +136,7 @@ describe('FlexDoc', () => {
       expect(result.format).toBe('pptx');
       expect(result.buffer).toBeInstanceOf(Buffer);
       expect(result.size).toBeGreaterThan(0);
-      expect(result.metadata.slideCount).toBeGreaterThan(0);
+      expect(result.metadata?.slideCount).toBeGreaterThan(0);
     });
 
     test('should convert HTML to PPTX file', async () => {
@@ -168,7 +168,7 @@ describe('FlexDoc', () => {
       });
 
       expect(result.success).toBe(true);
-      expect(result.metadata.slideCount).toBe(3);
+      expect(result.metadata?.slideCount).toBe(3);
     });
 
     test('should apply PPTX theme', async () => {
@@ -176,7 +176,8 @@ describe('FlexDoc', () => {
       const result = await flexdoc.toPPTX(html, {
         title: 'Test Presentation',
         author: 'Test Author',
-        theme: {
+        theme: 'corporate',
+        template: {
           primary: '#FF0000',
           secondary: '#00FF00',
           background: '#FFFFFF',
@@ -185,7 +186,7 @@ describe('FlexDoc', () => {
       });
 
       expect(result.success).toBe(true);
-      expect(result.metadata.options.title).toBe('Test Presentation');
+      expect(result.metadata?.options?.title).toBe('Test Presentation');
     });
   });
 
