@@ -15,6 +15,10 @@ export enum OutputFormat {
 export interface BaseConversionOptions {
   /** Output file path (optional - if not provided, returns buffer) */
   outputPath?: string;
+  /** Cloud storage output URL (e.g., s3://bucket/file.pdf) */
+  cloudOutput?: string;
+  /** Cloud storage credentials */
+  cloudCredentials?: import('./cloud').CloudCredentials;
   /** Enable debug logging */
   debug?: boolean;
   /** Timeout in milliseconds */

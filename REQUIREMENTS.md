@@ -298,10 +298,10 @@ class FlexDocError extends Error {
 
 #### Phase 2 (In Progress):
 - [x] ~~Word document (.docx) support~~ ✅ **COMPLETED v1.4.0**
+- [x] ~~REST API wrapper~~ ✅ **COMPLETED v1.5.0**
+- [x] ~~Cloud storage integration~~ ✅ **COMPLETED v1.6.0**
 - [ ] Excel (.xlsx) generation
 - [ ] Advanced ML-based layout detection
-- [ ] Cloud storage integration
-- [x] ~~REST API wrapper~~ ✅ **COMPLETED v1.5.0**
 - [x] ~~CLI tool~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Automatic chart generation from tables~~ ✅ **COMPLETED v1.2.0**

@@ -6,6 +6,7 @@
 import { pdfConverter } from './converters/pdf-converter';
 import { pptxConverter } from './converters/pptx-converter';
 import { DOCXConverter } from './converters/docx-converter';
+import { cloudStorage } from './cloud';
 import {
   ConversionOptions,
   ConversionResult,
@@ -95,7 +96,14 @@ export class FlexDoc implements IFlexDoc {
     options?: PDFOptions
   ): Promise<ConversionResult> {
     try {
-      return await pdfConverter.convert(html, options || {});
+      const result = await pdfConverter.convert(html, options || {});
+
+      // Upload to cloud if cloudOutput is specified
+      if (result.success && result.filePath && options?.cloudOutput) {
+        await this.uploadToCloud(result.filePath, options.cloudOutput, options.cloudCredentials);
+      }
+
+      return result;
     } catch (error) {
       if (error instanceof FlexDocError) {
         throw error;
@@ -318,6 +326,22 @@ export class FlexDoc implements IFlexDoc {
   getVersion(): string {
     return '1.0.0'; // This would normally come from package.json
   }
+
+  /**
+   * Upload file to cloud storage (internal helper)
+   */
+  private async uploadToCloud(
+    filePath: string,
+    cloudOutput: string,
+    credentials?: any
+  ): Promise<void> {
+    try {
+      await cloudStorage.upload(filePath, cloudOutput, credentials);
+    } catch (error) {
+      console.warn('Cloud upload failed:', error);
+      // Don't throw error - conversion succeeded, just upload failed
+    }
+  }
 }
 
 // Export everything needed for the library
@@ -334,6 +358,9 @@ export * from './engines/ai-layout-engine';
 
 // Export theme system
 export * from './themes';
+
+// Export cloud storage system
+export * from './cloud';
 
 // Create and export default instance
 const flexdoc = new FlexDoc();
