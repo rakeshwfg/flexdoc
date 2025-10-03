@@ -296,8 +296,8 @@ class FlexDocError extends Error {
 - ✅ Chart generation
 - ✅ Image processing
 
-#### Phase 2 (Planned):
-- [ ] Word document (.docx) support
+#### Phase 2 (In Progress):
+- [x] ~~Word document (.docx) support~~ ✅ **COMPLETED v1.4.0**
 - [ ] Excel (.xlsx) generation
 - [ ] Advanced ML-based layout detection
 - [ ] Cloud storage integration

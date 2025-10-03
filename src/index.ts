@@ -5,11 +5,13 @@
 
 import { pdfConverter } from './converters/pdf-converter';
 import { pptxConverter } from './converters/pptx-converter';
+import { DOCXConverter } from './converters/docx-converter';
 import {
   ConversionOptions,
   ConversionResult,
   PDFOptions,
   PPTXOptions,
+  DOCXOptions,
   HTMLInput,
   OutputFormat,
   IFlexDoc,
@@ -19,19 +21,25 @@ import {
   BatchConversionResult
 } from './types';
 
+// Create DOCX converter instance
+const docxConverter = new DOCXConverter();
+
 /**
- * FlexDoc - HTML to PDF/PPTX Converter
- * 
+ * FlexDoc - HTML to PDF/PPTX/DOCX Converter
+ *
  * @example
  * ```typescript
  * const flexdoc = new FlexDoc();
- * 
+ *
  * // Convert to PDF
  * const pdfResult = await flexdoc.toPDF('<h1>Hello World</h1>');
- * 
+ *
  * // Convert to PPTX
  * const pptxResult = await flexdoc.toPPTX('<h1>Slide 1</h1><h2>Slide 2</h2>');
- * 
+ *
+ * // Convert to DOCX
+ * const docxResult = await flexdoc.toWord('<h1>Document Title</h1><p>Content</p>');
+ *
  * // Unified API
  * const result = await flexdoc.convert(html, {
  *   format: OutputFormat.PDF,
@@ -42,7 +50,7 @@ import {
  */
 export class FlexDoc implements IFlexDoc {
   /**
-   * Convert HTML to specified format (PDF or PPTX)
+   * Convert HTML to specified format (PDF, PPTX, or DOCX)
    * Unified API for all conversions
    */
   async convert(
@@ -53,7 +61,7 @@ export class FlexDoc implements IFlexDoc {
     if (!options.format) {
       throw new FlexDocError(
         ErrorType.VALIDATION_ERROR,
-        'Format is required. Must be either "pdf" or "pptx"'
+        'Format is required. Must be "pdf", "pptx", or "docx"'
       );
     }
 
@@ -67,10 +75,14 @@ export class FlexDoc implements IFlexDoc {
         const pptxOpts = (options.pptxOptions || options.options || {}) as PPTXOptions;
         return this.toPPTX(html, pptxOpts);
 
+      case OutputFormat.DOCX:
+        const docxOpts = (options.docxOptions || options.options || {}) as DOCXOptions;
+        return this.toWord(html, docxOpts);
+
       default:
         throw new FlexDocError(
           ErrorType.VALIDATION_ERROR,
-          `Unsupported format: ${options.format}. Must be either "pdf" or "pptx"`
+          `Unsupported format: ${options.format}. Must be "pdf", "pptx", or "docx"`
         );
     }
   }
@@ -109,7 +121,7 @@ export class FlexDoc implements IFlexDoc {
         const { professionalPptxConverter } = await import('./converters/professional-pptx-converter');
         return await professionalPptxConverter.convert(html, options || {});
       }
-      
+
       // Use standard converter
       return await pptxConverter.convert(html, options || {});
     } catch (error) {
@@ -122,6 +134,37 @@ export class FlexDoc implements IFlexDoc {
         error
       );
     }
+  }
+
+  /**
+   * Convert HTML to Word document (DOCX)
+   */
+  async toWord(
+    html: string | HTMLInput,
+    options?: DOCXOptions
+  ): Promise<ConversionResult> {
+    try {
+      return await docxConverter.convert(html, options || {});
+    } catch (error) {
+      if (error instanceof FlexDocError) {
+        throw error;
+      }
+      throw new FlexDocError(
+        ErrorType.CONVERSION_FAILED,
+        `DOCX conversion failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error
+      );
+    }
+  }
+
+  /**
+   * Alias for toWord (backward compatibility)
+   */
+  async toDOCX(
+    html: string | HTMLInput,
+    options?: DOCXOptions
+  ): Promise<ConversionResult> {
+    return this.toWord(html, options);
   }
 
   /**
@@ -282,6 +325,7 @@ export * from './types';
 export { pdfConverter } from './converters/pdf-converter';
 export { pptxConverter } from './converters/pptx-converter';
 export { professionalPptxConverter } from './converters/professional-pptx-converter';
+export { DOCXConverter } from './converters/docx-converter';
 
 // Export engines
 export * from './engines/chart-engine';

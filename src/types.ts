@@ -5,7 +5,8 @@
  */
 export enum OutputFormat {
   PDF = 'pdf',
-  PPTX = 'pptx'
+  PPTX = 'pptx',
+  DOCX = 'docx'
 }
 
 /**
@@ -184,17 +185,105 @@ export interface PPTXOptions extends BaseConversionOptions {
 }
 
 /**
+ * DOCX-specific conversion options
+ */
+export interface DOCXOptions extends BaseConversionOptions {
+  /** Document orientation */
+  orientation?: 'portrait' | 'landscape';
+  /** Page size */
+  pageSize?: 'A4' | 'A3' | 'Letter' | 'Legal' | 'Tabloid';
+  /** Custom page width in twips (1/1440 of an inch) */
+  pageWidth?: number;
+  /** Custom page height in twips */
+  pageHeight?: number;
+  /** Page margins in twips */
+  margins?: {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+  };
+  /** Document title (metadata) */
+  title?: string;
+  /** Document subject (metadata) */
+  subject?: string;
+  /** Document author (metadata) */
+  author?: string;
+  /** Company name (metadata) */
+  company?: string;
+  /** Document description (metadata) */
+  description?: string;
+  /** Document keywords (metadata) */
+  keywords?: string[];
+  /** Theme/template to use - can be a preset ID or custom Theme object */
+  theme?: string | import('./themes').Theme;
+  /** Theme customization options */
+  themeOptions?: {
+    /** Quick primary color override */
+    primaryColor?: string;
+    /** Quick secondary color override */
+    secondaryColor?: string;
+    /** Quick accent color override */
+    accentColor?: string;
+    /** Quick font family override */
+    fontFamily?: string;
+    /** Enable/disable effects */
+    enableEffects?: boolean;
+    /** Dark mode variant */
+    darkMode?: boolean;
+  };
+  /** Header configuration */
+  header?: {
+    /** Header text */
+    text?: string;
+    /** Include page numbers in header */
+    includePageNumber?: boolean;
+    /** Page number format */
+    pageNumberFormat?: 'decimal' | 'roman' | 'letter';
+    /** Alignment */
+    alignment?: 'left' | 'center' | 'right';
+  };
+  /** Footer configuration */
+  footer?: {
+    /** Footer text */
+    text?: string;
+    /** Include page numbers in footer */
+    includePageNumber?: boolean;
+    /** Page number format */
+    pageNumberFormat?: 'decimal' | 'roman' | 'letter';
+    /** Alignment */
+    alignment?: 'left' | 'center' | 'right';
+  };
+  /** Line spacing */
+  lineSpacing?: number;
+  /** Font size for body text */
+  fontSize?: number;
+  /** Font family for body text */
+  fontFamily?: string;
+  /** Include table of contents */
+  includeTableOfContents?: boolean;
+  /** Table of contents depth (heading levels to include) */
+  tocDepth?: number;
+  /** Number pages */
+  numberPages?: boolean;
+  /** Page number start */
+  pageNumberStart?: number;
+}
+
+/**
  * Unified conversion options
  */
 export interface ConversionOptions {
   /** Output format */
   format: OutputFormat;
   /** Format-specific options */
-  options?: PDFOptions | PPTXOptions;
+  options?: PDFOptions | PPTXOptions | DOCXOptions;
   /** PDF-specific options (for backward compatibility) */
   pdfOptions?: PDFOptions;
   /** PPTX-specific options (for backward compatibility) */
   pptxOptions?: PPTXOptions;
+  /** DOCX-specific options (for backward compatibility) */
+  docxOptions?: DOCXOptions;
 }
 
 /**
@@ -245,6 +334,8 @@ export interface FlexDocConfig {
   defaultPDFOptions?: Partial<PDFOptions>;
   /** Default PPTX options */
   defaultPPTXOptions?: Partial<PPTXOptions>;
+  /** Default DOCX options */
+  defaultDOCXOptions?: Partial<DOCXOptions>;
   /** Enable caching */
   enableCache?: boolean;
   /** Cache directory */
@@ -273,7 +364,7 @@ export interface BatchConversionItem {
   /** Output format */
   format: OutputFormat;
   /** Conversion options */
-  options?: PDFOptions | PPTXOptions;
+  options?: PDFOptions | PPTXOptions | DOCXOptions;
 }
 
 /**
@@ -335,7 +426,7 @@ export class FlexDocError extends Error {
  * Converter interface
  */
 export interface IConverter {
-  convert(html: HTMLInput, options?: PDFOptions | PPTXOptions): Promise<ConversionResult>;
+  convert(html: HTMLInput, options?: PDFOptions | PPTXOptions | DOCXOptions): Promise<ConversionResult>;
 }
 
 /**

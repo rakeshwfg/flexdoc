@@ -5,7 +5,7 @@
  */
 
 import { Command } from 'commander';
-import { FlexDoc, OutputFormat, PDFOptions, PPTXOptions } from './index';
+import { FlexDoc, OutputFormat, PDFOptions, PPTXOptions, DOCXOptions } from './index';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,7 +17,7 @@ const packageJson = require('../package.json');
 
 program
   .name('flexdoc')
-  .description('Convert HTML to PDF or PPTX formats')
+  .description('Convert HTML to PDF, PPTX, or DOCX formats')
   .version(packageJson.version);
 
 // PDF Command
@@ -214,6 +214,124 @@ program
     }
   });
 
+// DOCX Command
+program
+  .command('docx')
+  .description('Convert HTML to Word document (DOCX)')
+  .argument('<input>', 'Input HTML file or URL')
+  .option('-o, --output <path>', 'Output DOCX file path', 'output.docx')
+  .option('-t, --title <title>', 'Document title')
+  .option('-a, --author <author>', 'Document author')
+  .option('-c, --company <company>', 'Company name')
+  .option('-s, --subject <subject>', 'Document subject')
+  .option('--orientation <orientation>', 'Page orientation (portrait, landscape)', 'portrait')
+  .option('--page-size <size>', 'Page size (A4, A3, Letter, Legal, Tabloid)', 'A4')
+  .option('--theme <theme>', 'Theme preset ID or name (corporate-blue, dark-mode, tech-purple, etc.)', 'corporate-blue')
+  .option('--theme-file <file>', 'Custom theme JSON file')
+  .option('--primary-color <color>', 'Override theme primary color (hex)')
+  .option('--font-family <font>', 'Body text font family')
+  .option('--font-size <size>', 'Body text font size', '11')
+  .option('--line-spacing <spacing>', 'Line spacing (e.g., 1.15, 1.5, 2.0)', '1.15')
+  .option('--header-text <text>', 'Header text')
+  .option('--footer-text <text>', 'Footer text')
+  .option('--page-numbers', 'Include page numbers in footer', false)
+  .option('--toc', 'Include table of contents', false)
+  .option('--toc-depth <depth>', 'TOC heading depth (1-6)', '3')
+  .option('--margin-top <twips>', 'Top margin in twips (1/1440 inch)', '1440')
+  .option('--margin-right <twips>', 'Right margin in twips', '1440')
+  .option('--margin-bottom <twips>', 'Bottom margin in twips', '1440')
+  .option('--margin-left <twips>', 'Left margin in twips', '1440')
+  .option('--css <file>', 'Custom CSS file to inject')
+  .option('--debug', 'Enable debug mode')
+  .action(async (input, options) => {
+    try {
+      console.log('🔄 Converting HTML to DOCX...');
+
+      // Read input
+      const html = await readInput(input);
+
+      // Read custom CSS if provided
+      let customCSS: string | undefined;
+      if (options.css) {
+        customCSS = fs.readFileSync(options.css, 'utf-8');
+      }
+
+      // Load theme if theme-file is provided
+      let theme: any = options.theme;
+      if (options.themeFile) {
+        const { ThemeManager } = await import('./themes');
+        theme = ThemeManager.loadThemeFromFile(options.themeFile);
+        console.log(`✅ Loaded custom theme from ${options.themeFile}`);
+      }
+
+      // Build DOCX options
+      const docxOptions: DOCXOptions = {
+        outputPath: options.output,
+        title: options.title,
+        author: options.author,
+        company: options.company,
+        subject: options.subject,
+        orientation: options.orientation as any,
+        pageSize: options.pageSize as any,
+        theme,
+        themeOptions: options.primaryColor ? {
+          primaryColor: options.primaryColor
+        } : undefined,
+        fontFamily: options.fontFamily,
+        fontSize: parseInt(options.fontSize),
+        lineSpacing: parseFloat(options.lineSpacing),
+        margins: {
+          top: parseInt(options.marginTop),
+          right: parseInt(options.marginRight),
+          bottom: parseInt(options.marginBottom),
+          left: parseInt(options.marginLeft)
+        },
+        includeTableOfContents: options.toc,
+        tocDepth: parseInt(options.tocDepth),
+        debug: options.debug
+      };
+
+      // Add header if provided
+      if (options.headerText) {
+        docxOptions.header = {
+          text: options.headerText,
+          alignment: 'left'
+        };
+      }
+
+      // Add footer if provided
+      if (options.footerText || options.pageNumbers) {
+        docxOptions.footer = {
+          text: options.footerText,
+          includePageNumber: options.pageNumbers,
+          alignment: 'center'
+        };
+      }
+
+      // Show progress
+      docxOptions.onProgress = (progress) => {
+        console.log(`  ${progress.percentage}% - ${progress.step}`);
+      };
+
+      // Convert
+      const result = await flexdoc.toWord(html, docxOptions);
+
+      if (result.success) {
+        console.log(`✅ DOCX created successfully!`);
+        console.log(`   File: ${result.filePath}`);
+        console.log(`   Size: ${formatBytes(result.size || 0)}`);
+        console.log(`   Pages: ~${result.metadata?.pageCount || 'N/A'}`);
+        console.log(`   Duration: ${result.duration}ms`);
+      } else {
+        console.error(`❌ Conversion failed: ${result.error}`);
+        process.exit(1);
+      }
+    } catch (error) {
+      console.error(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      process.exit(1);
+    }
+  });
+
 // Batch Command
 program
   .command('batch')
@@ -284,6 +402,7 @@ program
     console.log('\nSupported Formats:');
     console.log('  - PDF (via Puppeteer)');
     console.log('  - PPTX (via PptxGenJS)');
+    console.log('  - DOCX (via docx library)');
     console.log('\nFor help: flexdoc --help');
     console.log('For themes: flexdoc themes');
     console.log('Documentation: https://github.com/yourusername/flexdoc\n');

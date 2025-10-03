@@ -1,7 +1,7 @@
 # FlexDoc 📄
 
 <p align="center">
-  <strong>A flexible, lightweight npm library for converting HTML to PDF and PPTX formats</strong>
+  <strong>A flexible, lightweight npm library for converting HTML to PDF, PPTX, and DOCX formats</strong>
   <br>
   <em>Professional-grade, open-source alternative to Adobe's expensive APIs</em>
 </p>
@@ -20,7 +20,7 @@
 
 ## 🌟 Features
 
-- 🚀 **Dual Format Support**: Convert HTML to both PDF and PPTX formats
+- 🚀 **Multi-Format Support**: Convert HTML to PDF, PPTX, and DOCX formats
 - 🎯 **Unified API**: Single interface for all conversions with format-specific options
 - 🎨 **25+ Professional Themes**: Beautiful pre-designed themes for presentations
 - 🛠️ **Custom Theme Builder**: Create and save your own branded themes
@@ -65,6 +65,12 @@ const pdfResult = await flexdoc.toPDF('<h1>Hello World</h1>', {
 const pptxResult = await flexdoc.toPPTX('<h1>Slide 1</h1><h2>Slide 2</h2>', {
   outputPath: './presentation.pptx',
   splitBy: 'h2'
+});
+
+// Convert HTML to DOCX
+const docxResult = await flexdoc.toDOCX('<h1>My Document</h1><p>Content here</p>', {
+  outputPath: './document.docx',
+  orientation: 'portrait'
 });
 ```
 
@@ -206,6 +212,67 @@ flexdoc pptx content.html \
 - `--css <file>` - Custom CSS file to inject
 - `--debug` - Enable debug mode
 
+#### Convert to DOCX
+
+```bash
+# Basic usage
+flexdoc docx input.html -o document.docx
+
+# With options
+flexdoc docx input.html \
+  --output report.docx \
+  --orientation portrait \
+  --page-size A4 \
+  --title "Annual Report" \
+  --author "John Doe"
+
+# From URL
+flexdoc docx https://example.com -o webpage.docx
+
+# With header and footer
+flexdoc docx content.html \
+  --header "Company Confidential" \
+  --footer "Page {PAGE} of {TOTAL}" \
+  -o document.docx
+
+# With table of contents
+flexdoc docx document.html \
+  --toc \
+  --toc-title "Table of Contents" \
+  -o report.docx
+
+# With custom fonts and spacing
+flexdoc docx content.html \
+  --font-family "Calibri" \
+  --font-size 12 \
+  --line-spacing 1.5 \
+  --theme corporate \
+  -o styled.docx
+```
+
+**DOCX Options:**
+- `-o, --output <path>` - Output file path (default: output.docx)
+- `--orientation <orientation>` - Page orientation: portrait, landscape (default: portrait)
+- `--page-size <size>` - Page size: A4, Letter, Legal, A3, Tabloid (default: A4)
+- `-t, --title <title>` - Document title
+- `-a, --author <author>` - Document author
+- `-c, --company <company>` - Company name
+- `--theme <theme>` - Document theme: default, professional, modern, classic (default: default)
+- `--header <text>` - Header text (supports {PAGE} and {TOTAL} placeholders)
+- `--footer <text>` - Footer text (supports {PAGE} and {TOTAL} placeholders)
+- `--toc` - Generate table of contents
+- `--toc-title <title>` - Table of contents title (default: "Table of Contents")
+- `--font-family <font>` - Font family (default: Arial)
+- `--font-size <size>` - Font size in points (default: 11)
+- `--line-spacing <spacing>` - Line spacing multiplier (default: 1.15)
+- `--margin-top <size>` - Top margin (default: 1in)
+- `--margin-right <size>` - Right margin (default: 1in)
+- `--margin-bottom <size>` - Bottom margin (default: 1in)
+- `--margin-left <size>` - Left margin (default: 1in)
+- `--no-images` - Exclude images from document
+- `--css <file>` - Custom CSS file to inject
+- `--debug` - Enable debug mode
+
 #### Batch Conversion
 
 Convert multiple files using a JSON configuration:
@@ -272,12 +339,19 @@ flexdoc pptx data.html -o charts.pptx --theme corporate --chart-types bar,line
 # Disable automatic chart generation (keep tables)
 flexdoc pptx data.html -o tables.pptx --no-auto-charts
 
+# Create Word document with header and footer
+flexdoc docx report.html -o report.docx --header "Annual Report 2024" --footer "Page {PAGE}"
+
+# Create Word document with table of contents
+flexdoc docx documentation.html -o docs.docx --toc --theme professional
+
 # Batch convert multiple documents
 flexdoc batch conversions.json --debug
 
 # Get help for a specific command
 flexdoc pdf --help
 flexdoc pptx --help
+flexdoc docx --help
 ```
 
 ## 📖 API Documentation
@@ -317,15 +391,30 @@ const result = await flexdoc.toPPTX(html, {
 });
 ```
 
+##### `toDOCX(html, options?)`
+Convert HTML to Word document.
+
+```javascript
+const result = await flexdoc.toDOCX(html, {
+  outputPath: './document.docx',
+  orientation: 'portrait',
+  pageSize: 'A4',
+  title: 'My Document',
+  author: 'John Doe',
+  theme: 'professional'
+});
+```
+
 ##### `convert(html, options)`
-Unified API for both formats.
+Unified API for all formats.
 
 ```javascript
 const result = await flexdoc.convert(html, {
-  format: OutputFormat.PDF, // or OutputFormat.PPTX
+  format: OutputFormat.PDF, // or OutputFormat.PPTX, OutputFormat.DOCX
   outputPath: './output.pdf',
   pdfOptions: { /* PDF-specific options */ },
-  pptxOptions: { /* PPTX-specific options */ }
+  pptxOptions: { /* PPTX-specific options */ },
+  docxOptions: { /* DOCX-specific options */ }
 });
 ```
 
@@ -388,6 +477,32 @@ await flexdoc.toPDF({ content: '<h1>Hello</h1>' });
 | `theme` | string | 'default' | Presentation theme (default, dark, corporate, creative) |
 | `includeImages` | boolean | true | Include images from HTML |
 | `maxContentPerSlide` | number | 500 | Max characters per slide (auto-split) |
+
+### DOCX Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `orientation` | string | 'portrait' | Page orientation (portrait, landscape) |
+| `pageSize` | string | 'A4' | Page size (A4, Letter, Legal, A3, Tabloid) |
+| `pageWidth` | number | - | Custom page width (overrides pageSize) |
+| `pageHeight` | number | - | Custom page height (overrides pageSize) |
+| `margins` | object | {top:1440,...} | Page margins in twips (1 inch = 1440 twips) |
+| `title` | string | - | Document title |
+| `author` | string | - | Document author |
+| `company` | string | - | Company name |
+| `subject` | string | - | Document subject |
+| `keywords` | string | - | Document keywords |
+| `theme` | string | 'default' | Document theme (default, professional, modern, classic) |
+| `fontFamily` | string | 'Arial' | Default font family |
+| `fontSize` | number | 11 | Default font size in points |
+| `lineSpacing` | number | 1.15 | Line spacing multiplier |
+| `includeImages` | boolean | true | Include images from HTML |
+| `header` | object/string | - | Header configuration or text |
+| `footer` | object/string | - | Footer configuration or text |
+| `tableOfContents` | boolean/object | false | Generate table of contents |
+| `tocTitle` | string | 'Table of Contents' | TOC title |
+| `numbering` | boolean | false | Enable heading numbering |
+| `styles` | object | - | Custom styles configuration |
 
 ### Common Options
 
@@ -654,6 +769,409 @@ await flexdoc.toPDF(html, {
 - `fontWeight` - Font weight
 - `imageWidth` / `imageHeight` - Image dimensions
 
+### Word Document (DOCX) Conversion
+
+FlexDoc provides comprehensive Word document generation with professional formatting, themes, headers/footers, table of contents, and more.
+
+#### Basic DOCX Conversion
+
+```javascript
+const { FlexDoc } = require('flexdoc');
+const flexdoc = new FlexDoc();
+
+// Simple document
+await flexdoc.toDOCX('<h1>My Document</h1><p>Content here</p>', {
+  outputPath: './document.docx'
+});
+
+// From file
+await flexdoc.toDOCX({ filePath: './content.html' }, {
+  outputPath: './output.docx',
+  orientation: 'portrait',
+  pageSize: 'A4'
+});
+
+// From URL
+await flexdoc.toDOCX({ url: 'https://example.com/article' }, {
+  outputPath: './article.docx'
+});
+```
+
+#### DOCX with Professional Themes
+
+FlexDoc includes 25+ professional themes optimized for Word documents:
+
+```javascript
+// Use a preset theme
+await flexdoc.toDOCX(html, {
+  outputPath: './professional.docx',
+  theme: 'professional' // or 'modern', 'classic', 'elegant', 'corporate'
+});
+
+// Corporate theme with custom branding
+await flexdoc.toDOCX(html, {
+  outputPath: './branded.docx',
+  theme: 'corporate',
+  themeOptions: {
+    primaryColor: '#0066CC',
+    accentColor: '#FF6B35'
+  }
+});
+
+// Modern minimalist theme
+await flexdoc.toDOCX(html, {
+  outputPath: './modern.docx',
+  theme: 'modern',
+  fontFamily: 'Calibri',
+  fontSize: 11,
+  lineSpacing: 1.15
+});
+```
+
+**Available Document Themes:**
+- **Professional**: Clean, business-oriented design with serif fonts
+- **Modern**: Contemporary look with sans-serif fonts and subtle colors
+- **Classic**: Traditional academic style with Times New Roman
+- **Corporate**: Bold headings with structured formatting
+- **Elegant**: Sophisticated design with refined typography
+- **Technical**: Code-friendly with monospace support
+- **Creative**: Vibrant colors and unique formatting
+- **Minimalist**: Clean and simple design
+
+#### Headers and Footers with Page Numbers
+
+```javascript
+// Simple header and footer
+await flexdoc.toDOCX(html, {
+  outputPath: './document.docx',
+  header: 'Company Confidential',
+  footer: 'Page {PAGE} of {TOTAL}'
+});
+
+// Advanced header/footer configuration
+await flexdoc.toDOCX(html, {
+  outputPath: './report.docx',
+  header: {
+    text: 'Annual Report 2024',
+    alignment: 'center',
+    fontSize: 10,
+    color: '#666666'
+  },
+  footer: {
+    left: '© 2024 Company Inc.',
+    center: 'Confidential',
+    right: 'Page {PAGE} of {TOTAL}'
+  }
+});
+
+// Different header/footer for first page
+await flexdoc.toDOCX(html, {
+  outputPath: './custom.docx',
+  header: {
+    default: 'Company Name - Internal Report',
+    firstPage: '' // No header on first page
+  },
+  footer: {
+    default: 'Page {PAGE}',
+    firstPage: 'Copyright © 2024'
+  }
+});
+
+// With logo in header
+await flexdoc.toDOCX(html, {
+  outputPath: './branded.docx',
+  header: {
+    image: './logo.png',
+    imageWidth: 100,
+    imageHeight: 50,
+    alignment: 'right',
+    text: 'Company Name'
+  },
+  footer: 'Page {PAGE} of {TOTAL}'
+});
+```
+
+#### Table of Contents Generation
+
+```javascript
+// Basic table of contents
+await flexdoc.toDOCX(html, {
+  outputPath: './documentation.docx',
+  tableOfContents: true,
+  tocTitle: 'Table of Contents'
+});
+
+// Advanced TOC configuration
+await flexdoc.toDOCX(html, {
+  outputPath: './report.docx',
+  tableOfContents: {
+    enabled: true,
+    title: 'Contents',
+    includePageNumbers: true,
+    includeLinks: true,
+    maxDepth: 3, // Include h1, h2, h3
+    style: 'professional' // or 'simple', 'detailed'
+  }
+});
+
+// TOC with custom styling
+await flexdoc.toDOCX(html, {
+  outputPath: './styled-toc.docx',
+  tableOfContents: {
+    enabled: true,
+    title: 'Table of Contents',
+    fontSize: 14,
+    fontFamily: 'Calibri',
+    alignment: 'left',
+    showDots: true, // Leader dots
+    rightAlign: true // Right-align page numbers
+  }
+});
+```
+
+#### Custom Typography and Spacing
+
+```javascript
+// Custom fonts and spacing
+await flexdoc.toDOCX(html, {
+  outputPath: './custom.docx',
+  fontFamily: 'Calibri',
+  fontSize: 12,
+  lineSpacing: 1.5,
+  margins: {
+    top: 2880,    // 2 inches (1440 twips = 1 inch)
+    right: 1440,  // 1 inch
+    bottom: 2880, // 2 inches
+    left: 1440    // 1 inch
+  }
+});
+
+// Heading-specific styling
+await flexdoc.toDOCX(html, {
+  outputPath: './styled.docx',
+  styles: {
+    heading1: {
+      fontSize: 24,
+      fontFamily: 'Arial',
+      bold: true,
+      color: '#1a1a1a',
+      spacing: { before: 480, after: 240 }
+    },
+    heading2: {
+      fontSize: 18,
+      fontFamily: 'Arial',
+      bold: true,
+      color: '#333333',
+      spacing: { before: 360, after: 180 }
+    },
+    paragraph: {
+      fontSize: 11,
+      fontFamily: 'Calibri',
+      lineSpacing: 1.15,
+      alignment: 'justify'
+    }
+  }
+});
+
+// Professional report formatting
+await flexdoc.toDOCX(html, {
+  outputPath: './report.docx',
+  fontFamily: 'Georgia',
+  fontSize: 11,
+  lineSpacing: 1.5,
+  firstLineIndent: 720, // 0.5 inch
+  paragraphSpacing: {
+    before: 120,
+    after: 120
+  }
+});
+```
+
+#### Page Orientation and Sizes
+
+```javascript
+// Portrait A4 (default)
+await flexdoc.toDOCX(html, {
+  outputPath: './portrait.docx',
+  orientation: 'portrait',
+  pageSize: 'A4'
+});
+
+// Landscape Letter
+await flexdoc.toDOCX(html, {
+  outputPath: './landscape.docx',
+  orientation: 'landscape',
+  pageSize: 'Letter'
+});
+
+// Custom page dimensions
+await flexdoc.toDOCX(html, {
+  outputPath: './custom.docx',
+  pageWidth: 8.5,  // inches
+  pageHeight: 14,  // inches (Legal size)
+  orientation: 'portrait'
+});
+
+// Multiple page sizes (supports A4, Letter, Legal, A3, Tabloid)
+await flexdoc.toDOCX(html, {
+  outputPath: './legal.docx',
+  pageSize: 'Legal',
+  margins: {
+    top: 1440,
+    right: 1440,
+    bottom: 1440,
+    left: 1440
+  }
+});
+```
+
+#### Complete Document Example
+
+```javascript
+const html = `
+  <h1>Annual Report 2024</h1>
+
+  <h2>Executive Summary</h2>
+  <p>This report provides a comprehensive overview of our company's performance in 2024...</p>
+
+  <h2>Financial Performance</h2>
+  <h3>Revenue Growth</h3>
+  <p>Our revenue increased by 25% year-over-year...</p>
+
+  <table>
+    <tr><th>Quarter</th><th>Revenue</th><th>Growth</th></tr>
+    <tr><td>Q1</td><td>$2.5M</td><td>15%</td></tr>
+    <tr><td>Q2</td><td>$3.2M</td><td>28%</td></tr>
+    <tr><td>Q3</td><td>$3.8M</td><td>32%</td></tr>
+    <tr><td>Q4</td><td>$4.1M</td><td>35%</td></tr>
+  </table>
+
+  <h2>Conclusion</h2>
+  <p>Looking forward to continued growth in 2025...</p>
+`;
+
+await flexdoc.toDOCX(html, {
+  outputPath: './annual-report-2024.docx',
+
+  // Document metadata
+  title: 'Annual Report 2024',
+  author: 'John Doe',
+  company: 'Acme Corporation',
+  subject: 'Financial Performance Review',
+  keywords: 'annual report, finance, 2024, performance',
+
+  // Page setup
+  orientation: 'portrait',
+  pageSize: 'A4',
+  margins: {
+    top: 2880,    // 2 inches
+    right: 1440,  // 1 inch
+    bottom: 2880,
+    left: 1440
+  },
+
+  // Theme and styling
+  theme: 'professional',
+  fontFamily: 'Calibri',
+  fontSize: 11,
+  lineSpacing: 1.15,
+
+  // Headers and footers
+  header: {
+    text: 'Annual Report 2024 - Confidential',
+    alignment: 'center',
+    fontSize: 9,
+    color: '#666666'
+  },
+  footer: {
+    left: '© 2024 Acme Corporation',
+    center: '',
+    right: 'Page {PAGE} of {TOTAL}'
+  },
+
+  // Table of contents
+  tableOfContents: {
+    enabled: true,
+    title: 'Table of Contents',
+    includePageNumbers: true,
+    includeLinks: true,
+    maxDepth: 3
+  },
+
+  // Images
+  includeImages: true,
+
+  // Custom styles
+  styles: {
+    heading1: {
+      fontSize: 20,
+      bold: true,
+      color: '#1a472a',
+      spacing: { before: 480, after: 240 }
+    },
+    heading2: {
+      fontSize: 16,
+      bold: true,
+      color: '#2c5f2d',
+      spacing: { before: 360, after: 180 }
+    }
+  }
+});
+```
+
+#### CLI Examples for DOCX
+
+```bash
+# Basic conversion
+flexdoc docx report.html -o report.docx
+
+# With theme and formatting
+flexdoc docx content.html \
+  --output professional.docx \
+  --theme professional \
+  --font-family "Calibri" \
+  --font-size 11 \
+  --line-spacing 1.5
+
+# With header and footer
+flexdoc docx article.html \
+  --output article.docx \
+  --header "My Article" \
+  --footer "Page {PAGE} of {TOTAL}" \
+  --page-size Letter
+
+# With table of contents
+flexdoc docx documentation.html \
+  --output docs.docx \
+  --toc \
+  --toc-title "Documentation Index" \
+  --theme modern
+
+# Landscape orientation
+flexdoc docx wide-content.html \
+  --output landscape.docx \
+  --orientation landscape \
+  --page-size A4
+
+# Complete example with all options
+flexdoc docx report.html \
+  --output comprehensive-report.docx \
+  --title "Annual Report 2024" \
+  --author "John Doe" \
+  --company "Acme Corp" \
+  --theme corporate \
+  --orientation portrait \
+  --page-size A4 \
+  --header "Annual Report 2024 - Confidential" \
+  --footer "Page {PAGE} of {TOTAL}" \
+  --toc \
+  --font-family "Calibri" \
+  --font-size 12 \
+  --line-spacing 1.5 \
+  --margin-top 2in \
+  --margin-bottom 2in
+```
+
 ### Progress Tracking
 
 ```javascript
@@ -857,7 +1375,7 @@ For issues, questions, or suggestions, please:
 ## 🚀 Roadmap
 
 - [ ] Add support for Excel/CSV export
-- [ ] Implement Word document (.docx) generation
+- [x] ~~Implement Word document (.docx) generation~~ ✅ **COMPLETED v1.4.0**
 - [x] ~~Add watermark support for PDFs~~ ✅ **COMPLETED v1.1.0**
 - [x] ~~Support for charts and graphs in presentations~~ ✅ **COMPLETED v1.2.0**
 - [x] ~~Advanced theming engine~~ ✅ **COMPLETED v1.3.0**
