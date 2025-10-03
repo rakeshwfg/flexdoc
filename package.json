@@ -1,6 +1,6 @@
 {
   "name": "flexdoc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A flexible, lightweight npm library for converting HTML to PDF and PPTX formats. Enterprise-ready with zero paid dependencies.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
