@@ -1407,7 +1407,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ```bash
 # Clone your fork
-git clone https://github.com/yourusername/flexdoc.git
+git clone https://github.com/rakeshwfg/flexdoc.git
 cd flexdoc
 
 # Install dependencies
@@ -1479,8 +1479,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For issues, questions, or suggestions, please:
-- 📋 Open an issue on [GitHub](https://github.com/yourusername/flexdoc/issues)
-- 💬 Start a discussion on [GitHub Discussions](https://github.com/yourusername/flexdoc/discussions)
+- 📋 Open an issue on [GitHub](https://github.com/rakeshwfg/flexdoc/issues)
+- 💬 Start a discussion on [GitHub Discussions](https://github.com/rakeshwfg/flexdoc/discussions)
 - 📖 Check the [examples](./examples) directory
 - 📚 Read the [API documentation](#api-documentation)
 
@@ -1571,11 +1571,11 @@ Join our community:
 ---
 
 <p align="center">
-  <strong>Made with ❤️ by <a href="https://github.com/yourusername">Rakesh Singh</a></strong>
+  <strong>Made with ❤️ by <a href="https://github.com/rakeshwfg">Rakesh Singh</a></strong>
   <br>
   <sub>Free and Open Source • Enterprise Ready • Zero Dependencies Cost</sub>
 </p>
 
 <p align="center">
-  <a href="https://github.com/yourusername/flexdoc/stargazers">⭐ Star us on GitHub!</a>
+  <a href="https://github.com/rakeshwfg/flexdoc/stargazers">⭐ Star us on GitHub!</a>
 </p>
