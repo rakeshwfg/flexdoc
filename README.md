@@ -19,18 +19,26 @@
 
 ---
 
-## 🎉 What's New in v1.8.0
+## 🎉 What's New in v1.9.0
 
-**Major PPTX Enhancements** - Production-ready HTML to PowerPoint conversion!
+**Pro Tier Licensing System** - Monetize your usage with Pro features!
+
+- 🔑 **JWT-Based Licensing**: Secure, offline license validation with RSA signatures
+- ⭐ **Feature Gating**: Pro features locked behind license validation
+- 💎 **Pro Features**: Professional mode, 25+ premium themes, cloud storage, API server
+- 📊 **Tier System**: Free, Pro ($49/mo), and Enterprise tiers
+- 🛠️ **Easy Activation**: Environment variable, constructor, or .env file
+- 📖 **Comprehensive Docs**: Full licensing documentation and examples
+- 🔐 **Secure**: Offline validation, no API calls, cannot be forged
+
+[Get Pro License →](https://rakeshwfg.github.io/flexdoc/pricing)
+
+### Previous: v1.8.0 - Major PPTX Enhancements
 
 - ✨ **Native Table Rendering**: HTML tables → beautifully formatted PPTX tables
 - 📋 **Smart List Formatting**: Bullet points and numbered lists with proper styling
 - 🎯 **Semantic HTML Support**: `<section>` and `<article>` tags create slides automatically
 - 🚀 **Professional Mode Refactor**: Removed Puppeteer dependency, 4x faster!
-- 🐛 **Critical Bug Fixes**: Fixed section extraction, NodeFilter compatibility, and slide counting
-- 💪 **Structured Content**: Text, tables, and lists intelligently laid out in slides
-
-**Performance**: 11-slide business presentation in 131ms (standard) or 32ms (professional mode)
 
 [See full changelog →](#version-history)
 

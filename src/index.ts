@@ -61,8 +61,6 @@ const docxConverter = new DOCXConverter();
 export class FlexDoc implements IFlexDoc {
   private licenseValidator: LicenseValidator;
   private license: LicenseInfo | null = null;
-  private strictValidation: boolean = false;
-  private suppressWarnings: boolean = false;
 
   constructor(options?: LicenseOptions) {
     this.licenseValidator = new LicenseValidator();
@@ -94,9 +92,6 @@ export class FlexDoc implements IFlexDoc {
         }
       }
     }
-
-    this.strictValidation = options?.strictLicenseValidation || false;
-    this.suppressWarnings = options?.suppressLicenseWarnings || false;
   }
 
   /**
@@ -461,7 +456,7 @@ export class FlexDoc implements IFlexDoc {
    * Get version
    */
   getVersion(): string {
-    return '1.0.0'; // This would normally come from package.json
+    return '1.9.0';
   }
 
   /**
