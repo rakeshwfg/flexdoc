@@ -27,6 +27,8 @@
     "example:themes": "node examples/themes-example.js",
     "example:licensing": "node examples/licensing-example.js",
     "license:generate": "node scripts/generate-test-license.js",
+    "webhook:server": "node dist/payment/webhook-server.js",
+    "webhook:dev": "tsc && node dist/payment/webhook-server.js",
     "docker:build": "docker build -t flexdoc-api .",
     "docker:run": "docker-compose up -d",
     "docker:stop": "docker-compose down"
@@ -115,6 +117,7 @@
     "pptxgenjs": "^4.0.1",
     "puppeteer": "^24.23.0",
     "sharp": "^0.34.4",
+    "stripe": "^19.1.0",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
