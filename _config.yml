@@ -1,0 +1,100 @@
+# FlexDoc GitHub Pages Configuration
+title: FlexDoc
+description: Professional HTML to PDF, PPTX, and DOCX Conversion Library
+author: Rakesh Singh
+email: rakesh16@gmail.com
+url: "https://rakeshwfg.github.io"
+baseurl: "/flexdoc"
+
+# GitHub
+github_username: rakeshwfg
+repository: rakeshwfg/flexdoc
+
+# Social
+twitter_username: rakesh8116
+linkedin_username: rakesh-singh-1ab4563
+
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Exclude files
+exclude:
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - tsconfig.json
+  - src/
+  - dist/
+  - tests/
+  - examples/
+  - .github/
+  - commit-monetization.sh
+  - START-HERE.md
+  - SETUP-COMPLETE.md
+
+# Navigation
+navigation:
+  - title: Home
+    url: /
+  - title: Features
+    url: /features
+  - title: Pricing
+    url: /pricing
+  - title: Documentation
+    url: /docs
+  - title: GitHub
+    url: https://github.com/rakeshwfg/flexdoc
+
+# Pricing Tiers
+pricing:
+  free:
+    name: Free
+    price: $0
+    period: forever
+    features:
+      - HTML to PDF, PPTX, DOCX conversion
+      - Basic themes
+      - CLI tool
+      - Community support
+      - Open source
+    cta: Get Started
+    cta_url: https://github.com/rakeshwfg/flexdoc
+
+  pro:
+    name: Pro
+    price: $49
+    period: per month
+    annual_price: $490
+    annual_savings: Save $98/year
+    features:
+      - Everything in Free
+      - All 25+ premium themes
+      - Cloud storage integration (S3, Azure)
+      - ML-powered layout optimization
+      - REST API server access
+      - Priority support
+      - Advanced watermarking
+      - Custom branding options
+    cta: Join Waitlist
+    cta_url: "#waitlist"
+    popular: true
+
+  enterprise:
+    name: Enterprise
+    price: Custom
+    period: contact us
+    features:
+      - Everything in Pro
+      - Custom theme development
+      - Dedicated support engineer
+      - SLA guarantees
+      - On-premise deployment
+      - Custom integrations
+      - Training & onboarding
+      - Volume discounts
+    cta: Contact Sales
+    cta_url: "mailto:rakesh16@gmail.com"
