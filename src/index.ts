@@ -21,6 +21,12 @@ import {
   BatchConversionItem,
   BatchConversionResult
 } from './types';
+import {
+  LicenseValidator,
+  LicenseInfo,
+  LicenseOptions,
+  ProFeature,
+} from './licensing';
 
 // Create DOCX converter instance
 const docxConverter = new DOCXConverter();
@@ -30,26 +36,103 @@ const docxConverter = new DOCXConverter();
  *
  * @example
  * ```typescript
+ * // Free tier
+ * const flexdoc = new FlexDoc();
+ *
+ * // Pro tier with license
+ * const flexdoc = new FlexDoc({
+ *   licenseKey: 'your-pro-license-key'
+ * });
+ *
+ * // Or use environment variable
+ * process.env.FLEXDOC_LICENSE_KEY = 'your-license-key';
  * const flexdoc = new FlexDoc();
  *
  * // Convert to PDF
  * const pdfResult = await flexdoc.toPDF('<h1>Hello World</h1>');
  *
- * // Convert to PPTX
- * const pptxResult = await flexdoc.toPPTX('<h1>Slide 1</h1><h2>Slide 2</h2>');
- *
- * // Convert to DOCX
- * const docxResult = await flexdoc.toWord('<h1>Document Title</h1><p>Content</p>');
- *
- * // Unified API
- * const result = await flexdoc.convert(html, {
- *   format: OutputFormat.PDF,
- *   outputPath: './output.pdf',
- *   pdfOptions: { format: 'A4' }
+ * // Convert to PPTX with Pro features
+ * const pptxResult = await flexdoc.toPPTX('<h1>Slide 1</h1>', {
+ *   professional: true,  // Pro feature
+ *   theme: 'corporate-blue'  // Premium theme (Pro)
  * });
  * ```
  */
 export class FlexDoc implements IFlexDoc {
+  private licenseValidator: LicenseValidator;
+  private license: LicenseInfo | null = null;
+  private strictValidation: boolean = false;
+  private suppressWarnings: boolean = false;
+
+  constructor(options?: LicenseOptions) {
+    this.licenseValidator = new LicenseValidator();
+
+    // Check for license key from options or environment
+    const licenseKey = options?.licenseKey || process.env.FLEXDOC_LICENSE_KEY;
+
+    if (licenseKey) {
+      const validation = this.licenseValidator.validateLicense(licenseKey);
+
+      if (validation.valid && validation.license) {
+        this.license = validation.license;
+
+        if (!options?.suppressLicenseWarnings) {
+          console.log(`✅ FlexDoc ${this.license.tier.toUpperCase()} activated`);
+          console.log(`   Licensed to: ${this.license.email}`);
+          if (this.license.expires) {
+            console.log(`   Expires: ${new Date(this.license.expires).toLocaleDateString()}`);
+          }
+        }
+      } else {
+        const errorMsg = `⚠️  Invalid FlexDoc license: ${validation.error}`;
+
+        if (options?.strictLicenseValidation) {
+          throw new FlexDocError(ErrorType.VALIDATION_ERROR, errorMsg);
+        } else if (!options?.suppressLicenseWarnings) {
+          console.warn(errorMsg);
+          console.warn('   Running in free tier mode');
+        }
+      }
+    }
+
+    this.strictValidation = options?.strictLicenseValidation || false;
+    this.suppressWarnings = options?.suppressLicenseWarnings || false;
+  }
+
+  /**
+   * Check if a Pro feature is available
+   */
+  private hasFeature(feature: ProFeature): boolean {
+    return this.licenseValidator.hasFeature(this.license, feature);
+  }
+
+  /**
+   * Require a Pro feature, throw if not available
+   */
+  private requireFeature(feature: ProFeature, featureName: string): void {
+    if (!this.hasFeature(feature)) {
+      const message = this.licenseValidator.getFeatureRequirementMessage(
+        feature,
+        featureName,
+        this.license?.tier || 'free'
+      );
+      throw new FlexDocError(ErrorType.FEATURE_NOT_AVAILABLE, message);
+    }
+  }
+
+  /**
+   * Get current license info
+   */
+  getLicense(): LicenseInfo | null {
+    return this.license;
+  }
+
+  /**
+   * Get current license tier
+   */
+  getLicenseTier(): string {
+    return this.license?.tier || 'free';
+  }
   /**
    * Convert HTML to specified format (PDF, PPTX, or DOCX)
    * Unified API for all conversions
@@ -96,6 +179,11 @@ export class FlexDoc implements IFlexDoc {
     options?: PDFOptions
   ): Promise<ConversionResult> {
     try {
+      // Check for cloud storage
+      if (options?.cloudOutput) {
+        this.requireFeature('cloud-storage', 'Cloud storage integration');
+      }
+
       const result = await pdfConverter.convert(html, options || {});
 
       // Upload to cloud if cloudOutput is specified
@@ -124,6 +212,24 @@ export class FlexDoc implements IFlexDoc {
     options?: PPTXOptions & { professional?: boolean }
   ): Promise<ConversionResult> {
     try {
+      // Check for Pro features
+      if (options?.professional) {
+        this.requireFeature('professional-mode', 'Professional mode');
+      }
+
+      // Check for premium themes
+      if (options?.theme) {
+        const themeName = typeof options.theme === 'string' ? options.theme : (options.theme as any).name || 'unknown';
+        if (this.licenseValidator.isPremiumTheme(themeName)) {
+          this.requireFeature('premium-themes', `Premium theme "${themeName}"`);
+        }
+      }
+
+      // Check for cloud storage
+      if (options?.cloudOutput) {
+        this.requireFeature('cloud-storage', 'Cloud storage integration');
+      }
+
       // Professional mode: use enhanced standard converter with ML layout detection
       if (options?.professional) {
         const enhancedOptions = {
@@ -395,6 +501,9 @@ export * from './cloud';
 
 // Export ML layout detection system
 export * from './ml';
+
+// Export licensing system
+export * from './licensing';
 
 // Create and export default instance
 const flexdoc = new FlexDoc();
