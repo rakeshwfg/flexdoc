@@ -15,7 +15,6 @@ twitter_username: rakesh8116
 linkedin_username: rakesh-singh-1ab4563
 
 # Build settings
-theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
