@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexDoc - Professional HTML to PDF/PPTX Converter</title>
+    <meta name="description" content="Free, open-source alternative to Adobe APIs for converting HTML to PDF and PowerPoint presentations with professional quality.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="FlexDoc - Professional HTML to PDF/PPTX Converter">
+    <meta property="og:description" content="Free alternative to Adobe APIs. Convert HTML to professional PDFs and PowerPoint presentations.">
+    <meta property="og:image" content="https://rakeshwfg.github.io/flexdoc/assets/og-image.png">
+    <meta property="og:url" content="https://rakeshwfg.github.io/flexdoc">
+    
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10rem 2rem 5rem;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.875rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            padding: 2rem;
+            border-radius: 1rem;
+            background: #f8f9fa;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Comparison Section */
+        .comparison {
+            background: #f8f9fa;
+            padding: 5rem 2rem;
+        }
+        
+        .comparison-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .comparison h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .check {
+            color: #28a745;
+            font-size: 1.25rem;
+        }
+        
+        .cross {
+            color: #dc3545;
+            font-size: 1.25rem;
+        }
+        
+        /* Code Examples */
+        .examples {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .examples h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+        
+        .example-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .tab.active {
+            color: #667eea;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #667eea;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+        
+        pre {
+            margin: 0;
+        }
+        
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero .tagline {
+                font-size: 1.125rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Badges */
+        .badges {
+            margin: 2rem 0;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="index.html" class="logo">📄 FlexDoc</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="#examples">Examples</a></li>
+                <li><a href="https://github.com/rakeshwfg/flexdoc">GitHub</a></li>
+                <li><a href="https://www.npmjs.com/package/flexdoc">npm</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>FlexDoc</h1>
+        <p class="tagline">Professional HTML to PDF & PPTX Converter</p>
+        <div class="badges">
+            <span class="badge">🚀 Adobe API Alternative</span>
+            <span class="badge">💰 100% Free</span>
+            <span class="badge">🔒 Privacy-First</span>
+            <span class="badge">⚡ Lightning Fast</span>
+        </div>
+        <div class="hero-buttons">
+            <a href="#get-started" class="btn btn-primary">
+                <span>Get Started</span>
+                <span>→</span>
+            </a>
+            <a href="https://github.com/rakeshwfg/flexdoc" class="btn btn-secondary">
+                <span>⭐</span>
+                <span>Star on GitHub</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2>Why Choose FlexDoc?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">Professional Quality</h3>
+                <p class="feature-description">Adobe-level output quality with AI-powered layout optimization, professional templates, and smart content processing.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3 class="feature-title">Completely Free</h3>
+                <p class="feature-description">Save thousands of dollars monthly. No subscription fees, no per-operation costs, no hidden charges.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p class="feature-description">Local processing means no API latency. Convert documents in milliseconds, not seconds.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Privacy First</h3>
+                <p class="feature-description">Your data never leaves your servers. Complete privacy and security for sensitive documents.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">No Limits</h3>
+                <p class="feature-description">No rate limits, quotas, or restrictions. Convert unlimited documents at any scale.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3 class="feature-title">Fully Customizable</h3>
+                <p class="feature-description">Open source with complete control. Customize every aspect to match your exact needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="comparison" id="comparison">
+        <div class="comparison-container">
+            <h2>FlexDoc vs Adobe APIs</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>FlexDoc (Free)</th>
+                            <th>Adobe API ($$$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>HTML to PDF</strong></td>
+                            <td><span class="check">✓</span> Professional Quality</td>
+                            <td><span class="check">✓</span> Professional Quality</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HTML to PPTX</strong></td>
+                            <td><span class="check">✓</span> AI-Optimized</td>
+                            <td><span class="check">✓</span> AI-Optimized</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost</strong></td>
+                            <td><span class="check">✓</span> FREE Forever</td>
+                            <td><span class="cross">✗</span> $0.05 per operation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rate Limits</strong></td>
+                            <td><span class="check">✓</span> Unlimited</td>
+                            <td><span class="cross">✗</span> Quotas Apply</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Privacy</strong></td>
+                            <td><span class="check">✓</span> On-Premise</td>
+                            <td><span class="cross">✗</span> Cloud-Based</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Customization</strong></td>
+                            <td><span class="check">✓</span> Full Control</td>
+                            <td><span class="cross">✗</span> Limited Options</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Speed</strong></td>
+                            <td><span class="check">✓</span> Local Processing</td>
+                            <td><span class="cross">✗</span> Network Latency</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Offline Use</strong></td>
+                            <td><span class="check">✓</span> Works Offline</td>
+                            <td><span class="cross">✗</span> Requires Internet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Examples -->
+    <section class="examples" id="examples">
+        <h2>Simple to Use</h2>
+        
+        <div class="example-tabs">
+            <button class="tab active" onclick="showTab('basic')">Basic Usage</button>
+            <button class="tab" onclick="showTab('professional')">Professional Mode</button>
+            <button class="tab" onclick="showTab('advanced')">Advanced Features</button>
+        </div>
+        
+        <div id="basic-example" class="code-example">
+            <div class="code-block">
+                <pre><code class="language-javascript">const { FlexDoc } = require('flexdoc');
+const flexdoc = new FlexDoc();
+
+// Convert HTML to PDF
+const pdfResult = await flexdoc.toPDF(htmlContent, {
+  outputPath: './output.pdf',
+  format: 'A4'
+});
+
+// Convert HTML to PPTX
+const pptxResult = await flexdoc.toPPTX(htmlContent, {
+  outputPath: './presentation.pptx',
+  splitBy: 'h2'
+});</code></pre>
+            </div>
+        </div>
+        
+        <div id="professional-example" class="code-example" style="display: none;">
+            <div class="code-block">
+                <pre><code class="language-javascript">// Enable Adobe-quality professional mode
+const result = await flexdoc.toPPTX(htmlContent, {
+  professional: true,           // Enable AI optimization
+  theme: 'corporate',          // Professional template
+  optimizeLayout: true,        // Smart layout engine
+  convertTablesToCharts: true, // Auto visualization
+  enhanceImages: true,         // Image processing
+  outputPath: './professional.pptx'
+});
+
+// AI automatically:
+// ✓ Optimizes layout and visual balance
+// ✓ Converts data tables to charts
+// ✓ Applies professional design principles
+// ✓ Creates stunning presentations</code></pre>
+            </div>
+        </div>
+        
+        <div id="advanced-example" class="code-example" style="display: none;">
+            <div class="code-block">
+                <pre><code class="language-javascript">// Batch conversion with progress tracking
+const documents = [...]; // Your HTML documents
+
+const results = await flexdoc.batchConvert(documents.map(doc => ({
+  html: doc.content,
+  options: {
+    format: doc.type === 'report' ? 'pdf' : 'pptx',
+    professional: true,
+    onProgress: (progress) => {
+      console.log(`${progress.percentage}% - ${progress.step}`);
+    }
+  }
+})));
+
+// With retry logic for reliability
+const result = await flexdoc.convertWithRetry(html, options, 3);</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Get Started Section -->
+    <section class="cta" id="get-started">
+        <h2>Get Started in 30 Seconds</h2>
+        <p>Install FlexDoc and start converting documents professionally</p>
+        <div class="code-block" style="max-width: 600px; margin: 2rem auto;">
+            <pre><code class="language-bash">npm install flexdoc</code></pre>
+        </div>
+        <div class="hero-buttons">
+            <a href="https://github.com/yourusername/flexdoc" class="btn btn-primary">
+                <span>📖</span>
+                <span>View Documentation</span>
+            </a>
+            <a href="https://www.npmjs.com/package/flexdoc" class="btn btn-secondary">
+                <span>📦</span>
+                <span>View on npm</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="https://github.com/yourusername/flexdoc">GitHub</a>
+            <a href="https://www.npmjs.com/package/flexdoc">npm</a>
+            <a href="https://github.com/yourusername/flexdoc/issues">Issues</a>
+            <a href="https://github.com/yourusername/flexdoc/blob/main/LICENSE">MIT License</a>
+        </div>
+        <p>© 2024 FlexDoc. Built with ❤️ as a free alternative to expensive APIs.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script>
+        function showTab(tab) {
+            // Hide all examples
+            document.querySelectorAll('.code-example').forEach(ex => {
+                ex.style.display = 'none';
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            
+            // Show selected example
+            document.getElementById(tab + '-example').style.display = 'block';
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
