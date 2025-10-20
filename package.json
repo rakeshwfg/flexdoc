@@ -27,6 +27,7 @@
     "example:themes": "node examples/themes-example.js",
     "example:licensing": "node examples/licensing-example.js",
     "license:generate": "node scripts/generate-test-license.js",
+    "publish:npm": "bash scripts/publish.sh",
     "webhook:server": "node dist/payment/webhook-server.js",
     "webhook:dev": "tsc && node dist/payment/webhook-server.js",
     "docker:build": "docker build -t flexdoc-api .",
