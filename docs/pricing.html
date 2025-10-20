@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - FlexDoc Pro License</title>
+    <meta name="description" content="Choose the perfect FlexDoc plan for your needs. Free tier with core features, Pro tier with advanced capabilities, or Enterprise for custom solutions.">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="FlexDoc Pricing - Professional HTML Converter">
+    <meta property="og:description" content="Free forever or upgrade to Pro for advanced features. No hidden fees, transparent pricing.">
+    <meta property="og:image" content="https://rakeshwfg.github.io/flexdoc/assets/og-image.png">
+    <meta property="og:url" content="https://rakeshwfg.github.io/flexdoc/pricing">
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8rem 2rem 3rem;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2.5rem;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .pricing-card.featured {
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.2);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.08) translateY(-10px);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .pricing-tier {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price span {
+            font-size: 1.25rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .pricing-description {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .check {
+            color: #28a745;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .cross {
+            color: #dc3545;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+
+        /* Feature Comparison Table */
+        .comparison {
+            background: #f8f9fa;
+            padding: 5rem 2rem;
+        }
+
+        .comparison-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .comparison h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 5rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .faq-item {
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .faq-question {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
+
+        .faq-answer {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="index.html" class="logo">📄 FlexDoc</a>
+            <ul class="nav-links">
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="index.html#examples">Examples</a></li>
+                <li><a href="https://github.com/rakeshwfg/flexdoc">GitHub</a></li>
+                <li><a href="https://www.npmjs.com/package/flexdoc">npm</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Simple, Transparent Pricing</h1>
+        <p>Start for free, upgrade when you need advanced features. No hidden fees, cancel anytime.</p>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="pricing-grid">
+            <!-- Free Tier -->
+            <div class="pricing-card">
+                <h3 class="pricing-tier">Free</h3>
+                <div class="pricing-price">$0<span>/forever</span></div>
+                <p class="pricing-description">Perfect for individual developers and small projects</p>
+                <ul class="pricing-features">
+                    <li><span class="check">✓</span> HTML to PDF/PPTX/DOCX</li>
+                    <li><span class="check">✓</span> Basic Themes (5)</li>
+                    <li><span class="check">✓</span> CLI Tool</li>
+                    <li><span class="check">✓</span> Batch Processing</li>
+                    <li><span class="check">✓</span> Community Support</li>
+                    <li><span class="cross">✗</span> Professional Mode</li>
+                    <li><span class="cross">✗</span> Premium Themes (25+)</li>
+                    <li><span class="cross">✗</span> Cloud Storage</li>
+                    <li><span class="cross">✗</span> REST API Server</li>
+                </ul>
+                <a href="https://github.com/rakeshwfg/flexdoc" class="btn btn-secondary">Get Started Free</a>
+            </div>
+
+            <!-- Pro Tier -->
+            <div class="pricing-card featured">
+                <span class="popular-badge">Most Popular</span>
+                <h3 class="pricing-tier">Pro</h3>
+                <div class="pricing-price">$49<span>/month</span></div>
+                <p class="pricing-description">For professionals and growing businesses</p>
+                <ul class="pricing-features">
+                    <li><span class="check">✓</span> Everything in Free</li>
+                    <li><span class="check">✓</span> Professional Mode (ML-powered)</li>
+                    <li><span class="check">✓</span> Premium Themes (25+)</li>
+                    <li><span class="check">✓</span> Cloud Storage (S3, Azure)</li>
+                    <li><span class="check">✓</span> REST API Server</li>
+                    <li><span class="check">✓</span> Advanced Watermarks</li>
+                    <li><span class="check">✓</span> Custom Branding</li>
+                    <li><span class="check">✓</span> Priority Support (24-48h)</li>
+                    <li><span class="check">✓</span> Commercial Use</li>
+                </ul>
+                <a href="mailto:rakesh16@gmail.com?subject=FlexDoc%20Pro%20License" class="btn btn-primary">Get Pro License</a>
+            </div>
+
+            <!-- Enterprise Tier -->
+            <div class="pricing-card">
+                <h3 class="pricing-tier">Enterprise</h3>
+                <div class="pricing-price">Custom</div>
+                <p class="pricing-description">For large organizations with specific needs</p>
+                <ul class="pricing-features">
+                    <li><span class="check">✓</span> Everything in Pro</li>
+                    <li><span class="check">✓</span> White Label</li>
+                    <li><span class="check">✓</span> SLA Guarantee</li>
+                    <li><span class="check">✓</span> Volume Licensing</li>
+                    <li><span class="check">✓</span> Custom Features</li>
+                    <li><span class="check">✓</span> Dedicated Support</li>
+                    <li><span class="check">✓</span> Training & Onboarding</li>
+                    <li><span class="check">✓</span> Source Code Access</li>
+                    <li><span class="check">✓</span> Custom Integrations</li>
+                </ul>
+                <a href="mailto:rakesh16@gmail.com?subject=FlexDoc%20Enterprise%20Inquiry" class="btn btn-secondary">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Comparison Table -->
+    <section class="comparison">
+        <div class="comparison-container">
+            <h2>Detailed Feature Comparison</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Free</th>
+                            <th>Pro</th>
+                            <th>Enterprise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>HTML to PDF/PPTX/DOCX</strong></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Basic Themes</strong></td>
+                            <td>5 themes</td>
+                            <td>5 themes</td>
+                            <td>5 themes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Premium Themes</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td>25+ themes</td>
+                            <td>25+ themes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Professional Mode</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cloud Storage</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td>S3, Azure, GDrive</td>
+                            <td>S3, Azure, GDrive</td>
+                        </tr>
+                        <tr>
+                            <td><strong>REST API Server</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Advanced Watermarks</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custom Branding</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>White Label</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SLA Guarantee</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Support</strong></td>
+                            <td>Community</td>
+                            <td>Priority (24-48h)</td>
+                            <td>Dedicated</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Volume Licensing</strong></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">How do I activate my Pro license?</div>
+            <div class="faq-answer">
+                After purchasing, you'll receive a license key via email. Activate it using one of three methods:
+                <ul style="margin-top: 0.5rem;">
+                    <li>Set environment variable: <code>FLEXDOC_LICENSE_KEY=your-key</code></li>
+                    <li>In code: <code>new FlexDoc({ licenseKey: 'your-key' })</code></li>
+                    <li>Add to .env file: <code>FLEXDOC_LICENSE_KEY=your-key</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Can I use the free version commercially?</div>
+            <div class="faq-answer">
+                Yes! The free version is fully open-source and can be used for commercial projects. However, advanced features like Professional Mode, premium themes, and cloud storage require a Pro license.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">What's the difference between standard and professional mode?</div>
+            <div class="faq-answer">
+                Professional mode uses ML-powered layout optimization for Adobe-quality presentations. It's 4x faster (no browser overhead), produces better layouts, and includes enhanced visual hierarchy. This is a Pro-only feature.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Do you offer refunds?</div>
+            <div class="faq-answer">
+                Yes, we offer a 30-day money-back guarantee. If you're not satisfied with FlexDoc Pro, contact us within 30 days for a full refund.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">How does volume licensing work for Enterprise?</div>
+            <div class="faq-answer">
+                Enterprise plans include volume licensing for teams. Contact our sales team to discuss your specific needs, number of seats, and custom pricing.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Can I upgrade or downgrade my plan?</div>
+            <div class="faq-answer">
+                Yes, you can upgrade from Free to Pro or Enterprise at any time. For downgrades, contact support and we'll help you transition smoothly.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Is there a lifetime license option?</div>
+            <div class="faq-answer">
+                Yes! Contact us for lifetime Pro license pricing. Lifetime licenses include all Pro features and updates forever, with no recurring fees.
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="https://github.com/rakeshwfg/flexdoc">GitHub</a>
+            <a href="https://www.npmjs.com/package/flexdoc">npm</a>
+            <a href="https://github.com/rakeshwfg/flexdoc/issues">Issues</a>
+            <a href="https://github.com/rakeshwfg/flexdoc/blob/main/LICENSE">MIT License</a>
+            <a href="mailto:rakesh16@gmail.com">Contact</a>
+        </div>
+        <p>© 2024 FlexDoc. Built with ❤️ as a free alternative to expensive APIs.</p>
+    </footer>
+</body>
+</html>
